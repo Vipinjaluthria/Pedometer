@@ -39,6 +39,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -64,12 +65,17 @@ import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +103,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     Button share;
+    String Date;
     private TextView progresstext;
     int steps = 0;
     int perc;
@@ -131,6 +138,17 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         pg = (PieChart) v.findViewById(R.id.graph);
         ImageView img = (ImageView) v.findViewById(R.id.imageView);
         //Button btn = v.findViewById(R.id.animate);
+        SharedPreferences run = getActivity().getSharedPreferences("Database", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = run.edit();
+        if (run.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            run.edit().putBoolean("firstrun", false).apply();
+            editor.putBoolean("today",false).apply();
+            editor.putBoolean("tomorrow",false).apply();
+            editor.putBoolean("dayaftertomorrow",false).apply();
+            editor.putLong("MinimumTime",10000000).apply();
+        }
 
         ActivityCompat.requestPermissions(this.getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -178,10 +196,26 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 if(s>20){stopbtn.setEnabled(false); stopbtn.setClickable(false);}
                 if(Integer.parseInt(stepsView.getText().toString())>30){
                     Toast.makeText(getActivity(), "You Completed Your Journey in "+hh+":"+mm+":"+ss+" time!", Toast.LENGTH_LONG).show();
-                    makedialog();
-                    mStopWatch.stop();
-                    addToDatabase(firebaseAuth.getUid(),"vipin",hh+":"+mm+":"+ss);
+                    //makedialog();
 
+                    mStopWatch.stop();
+                    long MinimumTime=run.getLong("MinimumTime",1000000);
+                    MinimumTime= Math.min(MinimumTime, time);
+                    addToDatabase(firebaseAuth.getUid(),"vipin",hh+":"+mm+":"+ss);
+                    if(Date.equals("10")) {
+                        editor.putBoolean("today", true).apply();
+
+                        editor.putLong("MinimumTime",MinimumTime);
+                    }
+                    else if(Date.equals("11")) {
+
+                        editor.putBoolean("tomorrow", true).apply();
+                        editor.putLong("MinimumTime",MinimumTime);
+                    }
+                    else if(Date.equals("12")) {
+                        editor.putLong("MinimumTime",MinimumTime);
+                        editor.putBoolean("dayaftertomorrow", true).apply();
+                    }
                     if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
                     {ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
 //                Bitmap bitmap=takescreen();
@@ -228,9 +262,41 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 final int status =(Integer) v.getTag();
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
-                mStopWatch.start();
-                v.setTag(0);
-                start_again();
+                Date="10";
+                boolean today=run.getBoolean("today",true);
+
+                boolean tomorrow=run.getBoolean("today",true);
+
+                boolean dayaftertomorrow=run.getBoolean("today",true);
+                if(Date.equals("10")) {
+                    if (!today) {
+                        Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
+                        mStopWatch.start();
+
+                        v.setTag(0);
+                        start_again();
+                    }
+                }
+                else if(Date.equals("11"))
+                {
+                    if(!tomorrow)
+                    {
+                        mStopWatch.start();
+
+                        v.setTag(0);
+                        start_again();
+                    }
+                }
+                else if(Date.equals("12"))
+                {
+                    if(!dayaftertomorrow)
+                    {
+                        mStopWatch.start();
+
+                        v.setTag(0);
+                        start_again();
+                    }
+                }
             }
         });
         // slice for the steps taken today
@@ -263,6 +329,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         SharedPreferences prefs =
                 getActivity().getSharedPreferences("pedometer", Context.MODE_PRIVATE);
         goal = prefs.getInt("goal", Fragment_Settings.DEFAULT_GOAL);
+
         try {
             Database db = Database.getInstance(getActivity());
             SensorListener.getNotification_to_Zero(getActivity());
@@ -663,4 +730,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show());
 
     }
+
+
+
 }

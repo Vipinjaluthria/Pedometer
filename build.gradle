@@ -121,6 +121,7 @@ dependencies {
     playImplementation 'com.google.android.gms:play-services-fitness:20.0.0'
     playImplementation 'com.google.android.gms:play-services-games:21.0.0'
     playImplementation 'com.google.android.gms:play-services-identity:17.0.0'
+    implementation 'org.jsoup:jsoup:1.10.2'
 
     implementation 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
     implementation 'com.ogaclejapan.smarttablayout:utils-v4:2.0.0@aar'
