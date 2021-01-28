@@ -104,8 +104,10 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     FirebaseDatabase firebaseDatabase;
     Button share;
     String Date;
+     Button button;
     private TextView progresstext;
     int steps = 0;
+    String currentDateTimeString;
     int perc;
     Dialog dialog;
 
@@ -149,7 +151,10 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             editor.putBoolean("dayaftertomorrow",false).apply();
             editor.putLong("MinimumTime",10000000).apply();
         }
-
+         currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        Date=currentDateTimeString.substring(4,6);
+        Log.d("vipin",currentDateTimeString+"/"+Date);
+        Toast.makeText(getActivity(), "TODAY's Date = "+currentDateTimeString, Toast.LENGTH_LONG).show();
         ActivityCompat.requestPermissions(this.getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -197,12 +202,22 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 if(Integer.parseInt(stepsView.getText().toString())>30){
                     Toast.makeText(getActivity(), "You Completed Your Journey in "+hh+":"+mm+":"+ss+" time!", Toast.LENGTH_LONG).show();
                     //makedialog();
-
+                    button.setClickable(false);
+                    button.setEnabled(false);
+                    stopbtn.setClickable(false);
+                    stopbtn.setEnabled(false);
                     mStopWatch.stop();
                     long MinimumTime=run.getLong("MinimumTime",1000000);
                     MinimumTime= Math.min(MinimumTime, time);
+                     h   = (int)(MinimumTime /3600000);
+                     m = (int)(MinimumTime - h*3600000)/60000;
+                     s= (int)(MinimumTime - h*3600000- m*60000)/1000 ;
+                     hh = h < 10 ? "0"+h: h+"";
+                     mm = m < 10 ? "0"+m: m+"";
+                     ss = s < 10 ? "0"+s: s+"";
+
                     addToDatabase(firebaseAuth.getUid(),"vipin",hh+":"+mm+":"+ss);
-                    if(Date.equals("10")) {
+                    if(Date.equals("28")) {
                         editor.putBoolean("today", true).apply();
 
                         editor.putLong("MinimumTime",MinimumTime);
@@ -235,7 +250,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         });
 
         mStopWatch.setBase(SystemClock.elapsedRealtime());
-        final Button button =  v.findViewById(R.id.startstop);
+         button  =  v.findViewById(R.id.startstop);
         button.setTag(1);
         button.setText("START");
         stopbtn.setOnClickListener( new View.OnClickListener() {
@@ -255,6 +270,42 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 }, 2000);
             }
         });
+        ////checking values for shared prefrenece
+        boolean today=run.getBoolean("today",true);
+        boolean tomorrow=run.getBoolean("today",true);
+
+        boolean dayaftertomorrow=run.getBoolean("today",true);
+        if(Date.equals("28") && !today)
+        {
+            button.setEnabled(true);
+            button.setClickable(true);
+
+            stopbtn.setClickable(true);
+            stopbtn.setEnabled(true);
+        }
+        else if(Date.equals("11") && !tomorrow)
+        {
+            button.setEnabled(true);
+            button.setClickable(true);
+            stopbtn.setClickable(true);
+            stopbtn.setEnabled(true);
+        }
+        else if(Date.equals("12") && !dayaftertomorrow)
+        {
+            button.setEnabled(true);
+            button.setClickable(true);
+            stopbtn.setClickable(true);
+            stopbtn.setEnabled(true);
+        }
+        else
+        {
+            button.setEnabled(false);
+            button.setClickable(false);
+            stopbtn.setClickable(false);
+            stopbtn.setEnabled(false);
+        }
+
+
         button.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick (View v) {
@@ -262,13 +313,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 final int status =(Integer) v.getTag();
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
-                Date="10";
-                boolean today=run.getBoolean("today",true);
 
-                boolean tomorrow=run.getBoolean("today",true);
-
-                boolean dayaftertomorrow=run.getBoolean("today",true);
-                if(Date.equals("10")) {
+                if(Date.equals("28")) {
                     if (!today) {
                         Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
                         mStopWatch.start();
@@ -720,9 +766,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     private void addToDatabase(String uuid,String steps,String time) {
         HashMap<String,Object> hashMap=new HashMap<>();
-        hashMap.put("Time", time);
         hashMap.put("Name",firebaseAuth.getCurrentUser().getDisplayName());
         hashMap.put("Steps",steps);
+        hashMap.put("Time", time);
         hashMap.put("Email",firebaseAuth.getCurrentUser().getEmail());
         firebaseDatabase.getReference().child("USERS").child(uuid).updateChildren(hashMap).addOnSuccessListener(aVoid ->
                 Toast.makeText(getActivity(), "Succesful", Toast.LENGTH_SHORT).show())

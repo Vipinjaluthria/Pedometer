@@ -25,6 +25,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
     @Override
     public void onBindViewHolder(@NonNull LeaderView holder, int position) {
         holder.textView.setText(leaderBoards.get(position).getName());
+       // holder.timeview.setText(leaderBoards.get(position).getTime());
 
     }
 
