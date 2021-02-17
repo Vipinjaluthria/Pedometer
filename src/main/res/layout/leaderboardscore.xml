@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="388dp">
 
         <TextView
             android:id="@+id/textview"
@@ -30,8 +30,7 @@
             android:layout_width="120dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="0dp"
-            />
+            android:layout_marginEnd="0dp" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

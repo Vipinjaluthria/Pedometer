@@ -136,22 +136,22 @@ public class Fragment_Settings extends PreferenceFragment implements OnPreferenc
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+//        inflater.inflate(R.menu.main, menu);
+//    }
 
-    @Override
-    public void onPrepareOptionsMenu(final Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_settings).setVisible(false);
-        menu.findItem(R.id.action_split_count).setVisible(false);
-    }
+//    @Override
+//    public void onPrepareOptionsMenu(final Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//        menu.findItem(R.id.action_settings).setVisible(false);
+//        menu.findItem(R.id.action_split_count).setVisible(false);
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        return ((MainActivity) getActivity()).optionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(final MenuItem item) {
+//        return ((MainActivity) getActivity()).optionsItemSelected(item);
+//    }
 
     @Override
     public boolean onPreferenceClick(final Preference preference) {
