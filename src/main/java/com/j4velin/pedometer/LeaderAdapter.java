@@ -1,8 +1,11 @@
 package com.j4velin.pedometer;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,8 +27,15 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
 
     @Override
     public void onBindViewHolder(@NonNull LeaderView holder, int position) {
+        if(position==0){
+            holder.card.setBackgroundResource(R.drawable.leaderboard_bg);
+            ViewGroup.LayoutParams params = holder.card.getLayoutParams();;
+            params.height= 800;
+            holder.card.setLayoutParams(params);
+        }
         holder.textView.setText(leaderBoards.get(position).getName());
        // holder.timeview.setText(leaderBoards.get(position).getTime());
+        holder.idview.setText(String.valueOf(position+1));
 
     }
 
