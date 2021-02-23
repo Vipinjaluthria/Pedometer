@@ -2,6 +2,7 @@ package com.j4velin.pedometer;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,10 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             ViewGroup.LayoutParams params = holder.card.getLayoutParams();;
             params.height= 800;
             holder.card.setLayoutParams(params);
+            int color = Integer.parseInt("ffffff", 16)+0xFF000000;
+            holder.textView.setTextColor(color);
+            holder.timeview.setTextColor(color);
+            holder.idview.setTextColor(color);
         }
         holder.textView.setText(leaderBoards.get(position).getName());
        // holder.timeview.setText(leaderBoards.get(position).getTime());

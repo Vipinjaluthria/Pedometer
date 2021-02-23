@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/textview"
-            android:layout_width="243dp"
+            android:layout_width="279dp"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="-2dp"
@@ -36,23 +36,23 @@
             android:layout_marginBottom="0dp"
             android:layout_toEndOf="@+id/idview"
             android:gravity="bottom"
+            android:paddingBottom="10dp"
             android:textColor="#000"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:paddingBottom="10dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/timeview"
-            android:layout_width="131dp"
+            android:layout_width="94dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="3dp"
             android:gravity="bottom"
+            android:paddingBottom="10dp"
+            android:text="00:00:00"
             android:textColor="#000"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="00:00:00"
-            android:paddingBottom="10dp"/>
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -24,7 +24,7 @@
         android:layout_height="260dp"
         android:textColor="#3c3c44"
         android:layout_margin="8dp"
-        android:background="@drawable/test"
+        android:background="@drawable/popup"
         android:gravity="center"
         android:contentDescription="icon" />
 </RelativeLayout>

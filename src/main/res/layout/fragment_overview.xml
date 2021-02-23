@@ -13,8 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="115dp"
         app:egHighlightStrength="1"
-        app:egInnerPadding="75"
-        app:egLegendHeight="0dp" />
+        app:egInnerPadding="90"
+        app:egLegendHeight="0dp"/>
 
     <Chronometer
         android:id="@+id/chronometer"

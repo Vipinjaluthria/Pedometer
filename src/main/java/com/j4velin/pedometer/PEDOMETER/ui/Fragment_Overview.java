@@ -201,7 +201,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 if(s>20){stopbtn.setEnabled(false); stopbtn.setClickable(false);}
                 if(Integer.parseInt(stepsView.getText().toString())>30){
                     Toast.makeText(getActivity(), "You Completed Your Journey in "+hh+":"+mm+":"+ss+" time!", Toast.LENGTH_LONG).show();
-                    //makedialog();
+                    makedialog();
                     button.setClickable(false);
                     button.setEnabled(false);
                     stopbtn.setClickable(false);
@@ -350,7 +350,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         pg.addPieSlice(sliceCurrent);
 
         // slice for the "missing" steps until reaching the goal
-        sliceGoal = new PieModel("", Fragment_Settings.DEFAULT_GOAL, Color.parseColor("#CC0000"));
+        sliceGoal = new PieModel("", Fragment_Settings.DEFAULT_GOAL, Color.parseColor("#F99E2B"));
         pg.addPieSlice(sliceGoal);
 
         pg.setOnClickListener(new OnClickListener() {
