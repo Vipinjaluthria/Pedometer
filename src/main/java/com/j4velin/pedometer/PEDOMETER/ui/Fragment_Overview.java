@@ -188,8 +188,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         String name= acct.getDisplayName();
-        Toast.makeText(getActivity(), ""+name, Toast.LENGTH_SHORT).show();
-        username.setText(name);
+        String[] t =name.split(" ");
+        //Toast.makeText(getActivity(), ""+name, Toast.LENGTH_SHORT).show();
+        username.setText(t[0]);
         username.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
