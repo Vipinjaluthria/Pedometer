@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,7 +53,8 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             holder.imageView.setImageResource(R.drawable.round_button);
         }
         try {
-            if (leaderBoards.get(position).getPhoto() != null) {
+            Toast.makeText(context, leaderBoards.get(position).getPhoto(), Toast.LENGTH_SHORT).show();
+            if (leaderBoards.get(position).getPhoto() != null || TextUtils.isEmpty(leaderBoards.get(position).getPhoto())) {
                 Picasso.with(context).load(Uri.parse(leaderBoards.get(position).getPhoto())).into(holder.imageView);
             } else {
                 holder.imageView.setImageResource(R.drawable.round_button);

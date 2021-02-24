@@ -73,6 +73,9 @@ public class LeaderboardView extends Fragment {
     private void getData() {
         leaderBoardArrayList.clear();
         Query DatabaseQuery = firebaseDatabase.getReference().child("USERS").orderByChild("Time").limitToLast(100);
+        final String[] photo = {"null"};
+        final String[] name={"test"};
+        final String[] time={"0:0"};
         DatabaseQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -80,10 +83,22 @@ public class LeaderboardView extends Fragment {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
 
                     for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+
+                        if (snapshot2.getKey().equals("Photo")) {
+                            photo[0] = snapshot2.getValue().toString();
+                            Log.d("vipin",photo[0]);
+//                            leaderBoardArrayList.add(new LeaderBoard(photo[0],name, name, name, name));
+                        }
                         if (snapshot2.getKey().equals("Name")) {
-                            String name = snapshot2.getValue().toString();
-                            Log.d("vipin",name);
-                            leaderBoardArrayList.add(new LeaderBoard(name,name, name, name, name));
+                            name[0] = snapshot2.getValue().toString();
+                            Log.d("vipin",name[0]);
+//                            leaderBoardArrayList.add(new LeaderBoard(photo[0],name[0], name, name, name));
+                        }
+
+                        if (snapshot2.getKey().equals("Time")) {
+                            time[0] = snapshot2.getValue().toString();
+                            Log.d("vipin",time[0]);
+                            leaderBoardArrayList.add(new LeaderBoard(photo[0],name[0], "", time[0], ""));
                         }
 
                     }
