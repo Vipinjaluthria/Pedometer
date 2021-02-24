@@ -39,6 +39,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -802,7 +803,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 
         View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_option, null);
-        Button closebtn, sharebtn;
+        Button sharebtn;
+        RelativeLayout rl;
 //        closebtn=mView.findViewById(R.id.sports);
         sharebtn = mView.findViewById(R.id.sharebutton);
 
@@ -822,13 +824,45 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 //                Bitmap bitmap=takescreen();
 //                saveBitmap(bitmap);
 //                shareit();
-                View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+//                AlertDialog dialog2 =AlertDialog.class.cast(dialog);
+//                takeScreenshot(dialog2);
+
+                View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content);
                 Bitmap bmp=getScreenShot(rootView);
                 store(bmp,"file.png");
                 shareImage(file);
                 dialog.cancel();
             }
         });
+    }
+
+    private void takeScreenshot(AlertDialog dialog) {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = "/data/data/com.rohit.test/test.jpg"; // use your desired path
+
+            // create bitmap screen capture
+            View v1 = dialog.getWindow().getDecorView().getRootView();
+
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+        }
     }
 
 
