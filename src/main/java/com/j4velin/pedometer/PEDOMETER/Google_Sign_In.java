@@ -46,6 +46,7 @@ public class Google_Sign_In extends AppCompatActivity {
         if(firebaseUser!=null)
         {
             startActivity(new Intent(Google_Sign_In.this,MainActivity.class));
+            finish();
         }
         super.onStart();
     }

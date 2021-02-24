@@ -401,7 +401,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     private void showdialog() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-        builder1.setMessage("Write your message here.");
+        builder1.setMessage("Logout");
         builder1.setCancelable(false);
         builder1.setPositiveButton(
                 "Yes",
