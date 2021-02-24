@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    >
+    <TextView
+        android:id="@+id/img"
+        android:layout_width="260dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="260dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="45dp"
+        android:text="Please accept this pledge, We will plant a tree for each run RUN FOR GREEN"
+        android:contentDescription="icon" />
+
+</RelativeLayout>

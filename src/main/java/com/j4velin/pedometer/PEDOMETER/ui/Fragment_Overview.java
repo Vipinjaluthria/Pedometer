@@ -122,6 +122,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         } else {
             getActivity().startService(new Intent(getActivity(), SensorListener.class));
         }
+
+        makedialog2();
     }
 
     @Override
@@ -768,6 +770,14 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         }
     }
 
+    public void makedialog2() {
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+            View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_dos, null);
+            mBuilder.setView(mView);
+            final AlertDialog dialog = mBuilder.create();
+            dialog.show();
+    }
+
     public void saveBitmap(Bitmap bitmap){
         imagepath=new File(Environment.getExternalStorageDirectory() +"/Pictures/"+"screenshot.jpg");
         FileOutputStream fos;
@@ -836,34 +846,6 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         });
     }
 
-    private void takeScreenshot(AlertDialog dialog) {
-        Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-
-        try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = "/data/data/com.rohit.test/test.jpg"; // use your desired path
-
-            // create bitmap screen capture
-            View v1 = dialog.getWindow().getDecorView().getRootView();
-
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
-
-            File imageFile = new File(mPath);
-
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-
-        } catch (Throwable e) {
-            // Several error may come out with file handling or OOM
-            e.printStackTrace();
-        }
-    }
 
 
     private void addToDatabase(String uuid,String steps,String time) {

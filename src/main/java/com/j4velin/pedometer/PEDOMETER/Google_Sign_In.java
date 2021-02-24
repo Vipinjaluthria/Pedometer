@@ -3,18 +3,29 @@ package com.j4velin.pedometer.PEDOMETER;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +57,7 @@ public class Google_Sign_In extends AppCompatActivity {
     @Override
     protected void onStart() {
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
+        makedialog();
         if(firebaseUser!=null)
         {
             startActivity(new Intent(Google_Sign_In.this,MainActivity.class));
@@ -53,7 +65,13 @@ public class Google_Sign_In extends AppCompatActivity {
         }
         super.onStart();
     }
-
+    private void makedialog(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(Google_Sign_In.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_intro, null);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+    }
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +99,7 @@ public class Google_Sign_In extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ilivesimply.org/pledges")));
             }
         });
