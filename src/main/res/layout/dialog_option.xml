@@ -30,31 +30,48 @@
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:textFontWeight="700"
+        android:textStyle="bold"
         android:textSize="18dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="66dp"
+        android:id="@+id/congrats"
         android:layout_below="@+id/img"
         android:layout_marginTop="135dp"
         android:layout_marginEnd="50dp"
-        android:text="Congratulations You planted a tree!"
+        android:text="Congratulations!"
         android:textColor="#053C55"
         android:textAllCaps="false"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:textFontWeight="700"
         android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="66dp"
+            android:layout_below="@+id/img"
+            android:layout_marginTop="155dp"
+            android:layout_marginEnd="50dp"
+            android:text="You planted a tree!"
+            android:textColor="#053C55"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textFontWeight="700"
+            android:textSize="18dp"/>
     </RelativeLayout>
     <Button
         android:id="@+id/sharebutton"
-        android:layout_width="112dp"
-        android:layout_height="66dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/img2"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:text="SHARE"
         android:background="@drawable/round_button"
         android:textColor="#FFFFFF"
         android:textFontWeight="700"
-        android:textSize="30dp"/>
+        android:textSize="25dp"/>
 </RelativeLayout>

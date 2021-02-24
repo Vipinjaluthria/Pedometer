@@ -814,7 +814,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
         View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_option, null);
         Button sharebtn;
-        RelativeLayout rl;
+        TextView name=mView.findViewById(R.id.congrats);
+        name.setText("Congratulations! "+firebaseAuth.getCurrentUser().getDisplayName());
 //        closebtn=mView.findViewById(R.id.sports);
         sharebtn = mView.findViewById(R.id.sharebutton);
 
