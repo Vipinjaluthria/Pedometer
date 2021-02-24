@@ -125,24 +125,55 @@
         <Button
             android:id="@+id/startstop"
             android:layout_width="150dp"
-            android:layout_height="70dp"
-            android:text="START"
-            android:background="@drawable/round_button"
-            android:textColor="#FFFFFF"
-            android:textFontWeight="700"
-            android:textSize="30dp"
+            android:layout_height="match_parent"
             android:layout_marginRight="10dp"
-            />
-
-        <Button
-            android:id="@+id/stopbtn"
-            android:layout_width="150dp"
-            android:layout_height="70dp"
-            android:text="STOP"
             android:background="@drawable/round_button"
+            android:text="START"
             android:textColor="#FFFFFF"
             android:textFontWeight="700"
-            android:textSize="30dp"            />
+            android:textSize="30dp" />
+
+<!--        <Button-->
+<!--            android:visibility=""-->
+<!--            android:id="@+id/stopbtn"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:text="STOP"-->
+<!--            android:background="@drawable/round_button"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:textFontWeight="700"-->
+<!--            android:textSize="30dp"/>-->
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/buttons"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:id="@+id/stopbuttons">
+
+<!--        <Button-->
+<!--            android:id="@+id/startstop"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:background="@drawable/round_button"-->
+<!--            android:text="START"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:textFontWeight="700"-->
+<!--            android:textSize="30dp" />-->
+
+                <Button
+                    android:visibility="invisible"
+                    android:id="@+id/stopbtn"
+                    android:layout_width="150dp"
+                    android:layout_height="70dp"
+                    android:text="STOP"
+                    android:background="@drawable/round_button"
+                    android:textColor="#FFFFFF"
+                    android:textFontWeight="700"
+                    android:textSize="30dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -153,15 +184,6 @@
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/share"
-            android:layout_width="150dp"
-            android:layout_height="70dp"
-            android:text="@string/share"
-            android:background="@drawable/round_button"
-            android:textColor="#FFFFFF"
-            android:textFontWeight="700"
-            android:textSize="30dp"            />
     </LinearLayout>
 
 
@@ -188,6 +210,17 @@
         android:layout_marginTop="-71dp"
         android:layout_marginEnd="27dp"
         tools:src="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/share"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        android:background="@drawable/round_button"
+        android:text="@string/share"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="700"
+        android:textSize="30dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>
 

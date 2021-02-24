@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_marginLeft="60dp"
     android:layout_marginRight="60dp"
     android:layout_marginBottom="60dp"
@@ -16,7 +16,8 @@
         android:background="@android:drawable/ic_notification_clear_all"
         android:backgroundTint="#FF0000"
         android:gravity="center"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="invisible"/>
     <ImageView
         android:id="@+id/img"
         android:layout_width="260dp"
@@ -27,4 +28,18 @@
         android:background="@drawable/popup"
         android:gravity="center"
         android:contentDescription="icon" />
+
+    <Button
+        android:id="@+id/sharebutton"
+        android:layout_width="112dp"
+        android:layout_height="66dp"
+        android:layout_below="@+id/img"
+        android:layout_alignEnd="@+id/img"
+        android:layout_marginTop="75dp"
+        android:layout_marginEnd="70dp"
+        android:text="SHARE"
+        android:background="@drawable/round_button"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="700"
+        android:textSize="30dp"/>
 </RelativeLayout>

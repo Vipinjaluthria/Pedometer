@@ -256,7 +256,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         stopbtn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick (View v) {
-
+                    button.setVisibility(View.VISIBLE);
+                    stopbtn.setVisibility(View.INVISIBLE);
                     mStopWatch.setBase(SystemClock.elapsedRealtime());
                     mStopWatch.stop();
                     button.setText("START");
@@ -306,9 +307,12 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         }
 
 
+        int stopbtn_visible= 0;
         button.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick (View v) {
+                stopbtn.setVisibility(View.VISIBLE);
+                button.setVisibility(View.INVISIBLE);
                 button.setText("RESTART");
                 final int status =(Integer) v.getTag();
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
@@ -750,13 +754,30 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 
         View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_option, null);
-        Button closebtn;
+        Button closebtn, sharebtn;
         closebtn=mView.findViewById(R.id.sports);
+        sharebtn = mView.findViewById(R.id.sharebutton);
 
+        sharebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+                {ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+//                Bitmap bitmap=takescreen();
+//                saveBitmap(bitmap);
+//                shareit();
+                View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+                Bitmap bmp=getScreenShot(rootView);
+                store(bmp,"file.png");
+                shareImage(file);
+            }
+        });
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         closebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
