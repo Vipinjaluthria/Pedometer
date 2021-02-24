@@ -53,7 +53,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             holder.imageView.setImageResource(R.drawable.round_button);
         }
         try {
-            Toast.makeText(context, leaderBoards.get(position).getTime(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, leaderBoards.get(position).getTime(), Toast.LENGTH_SHORT).show();
             if (leaderBoards.get(position).getPhoto() != null || TextUtils.isEmpty(leaderBoards.get(position).getPhoto())) {
                 Picasso.with(context).load(Uri.parse(leaderBoards.get(position).getPhoto())).into(holder.imageView);
             } else {
