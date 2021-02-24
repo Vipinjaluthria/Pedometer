@@ -192,7 +192,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         String name= acct.getDisplayName();
         Uri photo= acct.getPhotoUrl();
-        Toast.makeText(getActivity(), photo.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), photo.toString(), Toast.LENGTH_SHORT).show();
         CircleImageView profileimg=v.findViewById(R.id.profile_image);
         Picasso.with(getActivity()).load(photo).into(profileimg);
         String[] words=name.split(" ");

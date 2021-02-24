@@ -45,6 +45,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             holder.textView.setTextColor(color);
             holder.timeview.setTextColor(color);
             holder.idview.setTextColor(color);
+            holder.imageView.setImageResource(R.drawable.test);
         }
 //        Picasso.with(context).load(getPhoto()).into(holder.imageView);
         holder.imageView.setImageResource(R.drawable.test);
