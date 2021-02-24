@@ -81,12 +81,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.j4velin.pedometer.BuildConfig;
 import com.j4velin.pedometer.MainActivity;
 import com.j4velin.pedometer.PEDOMETER.Database;
+import com.j4velin.pedometer.PEDOMETER.Google_Sign_In;
 import com.j4velin.pedometer.R;
 import com.j4velin.pedometer.PEDOMETER.SensorListener;
 import com.j4velin.pedometer.PEDOMETER.util.API26Wrapper;
@@ -99,9 +104,11 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     private PieModel sliceGoal, sliceCurrent;
     private PieChart pg;
     File imagepath;
+    TextView username;
     File file=null;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
+    GoogleSignInClient mGoogleSignInClient;
     Button share;
     String Date;
      Button button;
@@ -139,6 +146,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         stopbtn=v.findViewById(R.id.stopbtn);
         pg = (PieChart) v.findViewById(R.id.graph);
         ImageView img = (ImageView) v.findViewById(R.id.imageView);
+        username=v.findViewById(R.id.username);
+        username.setVisibility(View.VISIBLE);
         //Button btn = v.findViewById(R.id.animate);
         SharedPreferences run = getActivity().getSharedPreferences("Database", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = run.edit();
@@ -170,6 +179,25 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 //
 //            }
 //        });
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        String name= acct.getDisplayName();
+        Toast.makeText(getActivity(), ""+name, Toast.LENGTH_SHORT).show();
+        username.setText(name);
+        username.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showdialog();
+            }
+        });
+
+
 
         share=v.findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
@@ -370,6 +398,33 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         pg.startAnimation();
         return v;
     }
+
+    private void showdialog() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+        builder1.setMessage("Write your message here.");
+        builder1.setCancelable(false);
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        firebaseAuth.signOut();
+                        startActivity(new Intent(getActivity().getApplicationContext(),Google_Sign_In.class));
+                        getActivity().finish();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
     public void set_to_zero(){
         totalView.setText(String.valueOf(0));
         stepsView.setText(String.valueOf(0));
@@ -797,7 +852,5 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show());
 
     }
-
-
 
 }

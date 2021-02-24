@@ -199,17 +199,28 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/prithvi" />
 
-    <ImageView
+   <!-- <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="92dp"
+        android:layout_width="107dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/steps"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="307dp"
-        android:layout_marginTop="-71dp"
-        android:layout_marginEnd="27dp"
-        tools:src="@tools:sample/avatars" />
+        android:layout_marginStart="341dp"
+        android:layout_marginTop="-70dp"
+        android:layout_marginEnd="29dp"
+        tools:src="@tools:sample/avatars" /-->
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="769dp"
+        android:text="username"
+        android:textColor="#000" />
 
     <Button
         android:id="@+id/share"
