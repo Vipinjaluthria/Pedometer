@@ -856,7 +856,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         hashMap.put("Time", time);
         hashMap.put("Email",firebaseAuth.getCurrentUser().getEmail());
         firebaseDatabase.getReference().child("USERS").child(uuid).updateChildren(hashMap).addOnSuccessListener(aVoid ->
-                Toast.makeText(getActivity(), "Succesful", Toast.LENGTH_SHORT).show())
+                Toast.makeText(getActivity(), "Successful", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e ->
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show());
 

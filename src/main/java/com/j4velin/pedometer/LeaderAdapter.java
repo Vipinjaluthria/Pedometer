@@ -47,8 +47,9 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             holder.idview.setTextColor(color);
             holder.imageView.setImageResource(R.drawable.test);
         }
-//        Picasso.with(context).load(getPhoto()).into(holder.imageView);
-        holder.imageView.setImageResource(R.drawable.test);
+        try{Picasso.with(context).load(leaderBoards.get(position).getPhoto()).into(holder.imageView);}catch(Exception e){
+            holder.imageView.setImageResource(R.drawable.round_button);
+        }
         holder.textView.setText(leaderBoards.get(position).getName());
        // holder.timeview.setText(leaderBoards.get(position).getTime());
         holder.idview.setText(String.valueOf(position+1));
