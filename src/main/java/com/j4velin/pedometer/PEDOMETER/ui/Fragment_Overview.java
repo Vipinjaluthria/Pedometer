@@ -268,6 +268,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                     //String time=hh+":"+mm+":"+ss;
                 }
                 cArg.setText(hh+":"+mm+":"+ss);
+                set_to_zero();
+                button.setText("START");
             }
 
 
