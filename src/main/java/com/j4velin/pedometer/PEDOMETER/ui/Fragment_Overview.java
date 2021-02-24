@@ -191,7 +191,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         });
 
 
-
+        button  =  v.findViewById(R.id.startstop);
         share=v.findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,10 +257,10 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 //                Bitmap bitmap=takescreen();
 //                saveBitmap(bitmap);
 //                shareit();
-                    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-                    Bitmap bmp=getScreenShot(rootView);
-                    store(bmp,"file.png");
-                    shareImage(file);
+//                    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+//                    Bitmap bmp=getScreenShot(rootView);
+//                    store(bmp,"file.png");
+//                    shareImage(file);
                     //UPLOAD TO DATABASE TIME
                     //String time=hh+":"+mm+":"+ss;
                 }
@@ -271,7 +271,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         });
 
         mStopWatch.setBase(SystemClock.elapsedRealtime());
-         button  =  v.findViewById(R.id.startstop);
+//         button  =  v.findViewById(R.id.startstop);
         button.setTag(1);
         button.setText("START");
         stopbtn.setOnClickListener( new View.OnClickListener() {
@@ -297,7 +297,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         boolean tomorrow=run.getBoolean("today",true);
 
         boolean dayaftertomorrow=run.getBoolean("today",true);
-        if(Date.equals("28") && !today)
+        if(Date.equals("25") && !today)
         {
             button.setEnabled(true);
             button.setClickable(true);
@@ -339,7 +339,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
 
-                if(Date.equals("28")) {
+                if(Date.equals("25")) {
                     if (!today) {
                         Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
                         mStopWatch.start();
@@ -803,8 +803,16 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
         View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_option, null);
         Button closebtn, sharebtn;
-        closebtn=mView.findViewById(R.id.sports);
+//        closebtn=mView.findViewById(R.id.sports);
         sharebtn = mView.findViewById(R.id.sharebutton);
+
+
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
         sharebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -818,19 +826,10 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 Bitmap bmp=getScreenShot(rootView);
                 store(bmp,"file.png");
                 shareImage(file);
+                dialog.cancel();
             }
         });
-        mBuilder.setView(mView);
-        final AlertDialog dialog = mBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        closebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }});}
+    }
 
 
     private void addToDatabase(String uuid,String steps,String time) {
