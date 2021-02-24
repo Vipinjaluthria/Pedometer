@@ -9,11 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class LeaderView extends RecyclerView.ViewHolder {
+    CircleImageView imageView;
     TextView textView,timeview, idview;
     RelativeLayout card;
     public LeaderView(@NonNull View itemView) {
         super(itemView);
+        imageView=itemView.findViewById(R.id.circleimageview);
         textView=itemView.findViewById(R.id.textview);
         timeview=itemView.findViewById(R.id.timeview);
         idview=itemView.findViewById(R.id.idview);

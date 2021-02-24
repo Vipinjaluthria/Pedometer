@@ -1,15 +1,20 @@
 package com.j4velin.pedometer;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -19,10 +24,13 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
     }
     ArrayList<LeaderBoard>leaderBoards;
 
+    private Context context;
+
     @NonNull
     @Override
     public LeaderView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboardscore,parent,false);
+        context = parent.getContext();
         return new LeaderView(view);
     }
 
@@ -38,6 +46,8 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             holder.timeview.setTextColor(color);
             holder.idview.setTextColor(color);
         }
+//        Picasso.with(context).load(getPhoto()).into(holder.imageView);
+        holder.imageView.setImageResource(R.drawable.test);
         holder.textView.setText(leaderBoards.get(position).getName());
        // holder.timeview.setText(leaderBoards.get(position).getTime());
         holder.idview.setText(String.valueOf(position+1));

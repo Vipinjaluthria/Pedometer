@@ -199,29 +199,32 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/prithvi" />
 
-   <!-- <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="107dp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/steps"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="341dp"
-        android:layout_marginTop="-70dp"
-        android:layout_marginEnd="29dp"
-        tools:src="@tools:sample/avatars" /-->
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_alignParentRight="true">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/test"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"/>
 
     <TextView
         android:id="@+id/username"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="7dp"
-        android:gravity="center"
         android:text="username"
-        android:textColor="#000"
-        android:textStyle="bold" />
+        android:textColor="#000" />
+</LinearLayout>
 
     <Button
         android:id="@+id/share"
@@ -233,6 +236,6 @@
         android:textFontWeight="700"
         android:textSize="30dp"
         android:visibility="invisible" />
-
+`
 </RelativeLayout>
 

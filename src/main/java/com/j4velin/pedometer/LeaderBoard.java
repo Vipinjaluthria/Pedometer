@@ -1,6 +1,7 @@
 package com.j4velin.pedometer;
 
 public class LeaderBoard {
+    String Photo;
     String Name;
     String Steps;
     String Time;
@@ -9,6 +10,9 @@ public class LeaderBoard {
     public LeaderBoard() {
     }
 
+    public String getPhoto() {
+        return Photo;
+    }
 
     public String getName() {
         return Name;
@@ -26,7 +30,8 @@ public class LeaderBoard {
         return Email;
     }
 
-    public LeaderBoard(String name, String steps, String time, String email) {
+    public LeaderBoard(String photo,String name, String steps, String time, String email) {
+        Photo = photo;
         Name = name;
         Steps = steps;
         Time = time;

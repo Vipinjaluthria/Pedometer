@@ -83,7 +83,7 @@ public class LeaderboardView extends Fragment {
                         if (snapshot2.getKey().equals("Name")) {
                             String name = snapshot2.getValue().toString();
                             Log.d("vipin",name);
-                            leaderBoardArrayList.add(new LeaderBoard(name, name, name, name));
+                            leaderBoardArrayList.add(new LeaderBoard(name,name, name, name, name));
                         }
 
                     }

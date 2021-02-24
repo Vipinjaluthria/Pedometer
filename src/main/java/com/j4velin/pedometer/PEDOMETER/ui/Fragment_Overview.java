@@ -97,6 +97,9 @@ import com.j4velin.pedometer.PEDOMETER.SensorListener;
 import com.j4velin.pedometer.PEDOMETER.util.API26Wrapper;
 import com.j4velin.pedometer.PEDOMETER.util.Logger;
 import com.j4velin.pedometer.PEDOMETER.util.Util;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Fragment_Overview extends Fragment implements SensorEventListener {
 
@@ -188,10 +191,14 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         String name= acct.getDisplayName();
-        String[] t =name.split(" ");
-        //Toast.makeText(getActivity(), ""+name, Toast.LENGTH_SHORT).show();
-        username.setText(t[0]);
-        username.setOnClickListener(new OnClickListener() {
+        Uri photo= acct.getPhotoUrl();
+        Toast.makeText(getActivity(), photo.toString(), Toast.LENGTH_SHORT).show();
+        CircleImageView profileimg=v.findViewById(R.id.profile_image);
+        Picasso.with(getActivity()).load(photo).into(profileimg);
+        String[] words=name.split(" ");
+        Toast.makeText(getActivity(), ""+words[0], Toast.LENGTH_SHORT).show();
+        username.setText(words[0]);
+        profileimg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 showdialog();
@@ -402,8 +409,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     private void showdialog() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-        builder1.setMessage("Logout");
         builder1.setCancelable(false);
+        builder1.setMessage("Logout");
         builder1.setPositiveButton(
                 "Yes",
                 new DialogInterface.OnClickListener() {
@@ -843,6 +850,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     private void addToDatabase(String uuid,String steps,String time) {
         HashMap<String,Object> hashMap=new HashMap<>();
+        hashMap.put("Photo",firebaseAuth.getCurrentUser().getPhotoUrl().toString());
         hashMap.put("Name",firebaseAuth.getCurrentUser().getDisplayName());
         hashMap.put("Steps",steps);
         hashMap.put("Time", time);
