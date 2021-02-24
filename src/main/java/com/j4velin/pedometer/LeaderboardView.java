@@ -97,7 +97,8 @@ public class LeaderboardView extends Fragment {
 
                         if (snapshot2.getKey().equals("Time")) {
                             time[0] = snapshot2.getValue().toString();
-                            Log.d("vipin",time[0]);
+                            Log.d("time",time[0]);
+//                            Toast.makeText(getActivity(), photo[0]+ name[0] + time[0], Toast.LENGTH_SHORT).show();
                             leaderBoardArrayList.add(new LeaderBoard(photo[0],name[0], "", time[0], ""));
                         }
 
