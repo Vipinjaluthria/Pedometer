@@ -223,7 +223,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 String mm = m < 10 ? "0"+m: m+"";
                 String ss = s < 10 ? "0"+s: s+"";
                 if(s>20){stopbtn.setEnabled(false); stopbtn.setClickable(false);}
-                if(Integer.parseInt(stepsView.getText().toString())>30){
+                if(Integer.parseInt(stepsView.getText().toString())>=6666){
                     Toast.makeText(getActivity(), "You Completed Your Journey in "+hh+":"+mm+":"+ss+" time!", Toast.LENGTH_LONG).show();
                     makedialog();
                     button.setClickable(false);
