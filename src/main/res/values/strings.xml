@@ -63,4 +63,5 @@
     <string name="share">Share</string>
     <string name="todo1">TODO</string>
     <string name="todo2">TODO</string>
+<!--    <string name="pledge"><a href="https://www.ilivesimply.org/pledges">Let's Take A Pledge</a></string>-->
 </resources>

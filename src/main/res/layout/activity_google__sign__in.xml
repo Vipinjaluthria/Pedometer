@@ -11,10 +11,26 @@
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
+        android:layout_marginStart="140dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.534" />
+
+    <Button
+        android:id="@+id/pledge"
+        android:layout_width="236dp"
+        android:layout_height="52dp"
+        android:background="@drawable/round_button"
+        android:text="Let's Take A Pledge"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="700"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.577"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.668" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

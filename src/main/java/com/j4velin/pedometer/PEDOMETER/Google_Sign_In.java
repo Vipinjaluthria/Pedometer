@@ -1,14 +1,21 @@
 package com.j4velin.pedometer.PEDOMETER;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -43,6 +50,7 @@ public class Google_Sign_In extends AppCompatActivity {
         super.onStart();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,18 @@ public class Google_Sign_In extends AppCompatActivity {
                 signIn();
             }
         });
+        Button btn = findViewById(R.id.pledge);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ilivesimply.org/pledges")));
+            }
+        });
+//        TextView textView =findViewById(R.id.pledge);
+//        textView.setClickable(true);
+//        textView.setMovementMethod(LinkMovementMethod.getInstance());
+//        String text = "<a href='https://www.ilivesimply.org/pledges'>Let's Take A Pledge</a>";
+//        textView.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
     }
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
