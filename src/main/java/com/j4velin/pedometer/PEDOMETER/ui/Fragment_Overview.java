@@ -224,6 +224,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 String ss = s < 10 ? "0"+s: s+"";
                 if(s>20){stopbtn.setEnabled(false); stopbtn.setClickable(false);}
                 if(Integer.parseInt(stepsView.getText().toString())>=6666){
+
                     Toast.makeText(getActivity(), "You Completed Your Journey in "+hh+":"+mm+":"+ss+" time!", Toast.LENGTH_LONG).show();
                     makedialog();
                     button.setClickable(false);
@@ -239,8 +240,11 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                      hh = h < 10 ? "0"+h: h+"";
                      mm = m < 10 ? "0"+m: m+"";
                      ss = s < 10 ? "0"+s: s+"";
-
-                    addToDatabase(firebaseAuth.getUid(),"vipin",hh+":"+mm+":"+ss);
+                    if(m<13 && h==0){
+                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
+                    }
                     if(Date.equals("25")) {
                         editor.putBoolean("today", true).apply();
 
