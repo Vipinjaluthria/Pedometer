@@ -10,6 +10,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -25,6 +26,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,11 +55,11 @@ public class Google_Sign_In extends AppCompatActivity {
     SignInButton signInButton;
     FirebaseAuth firebaseAuth;
     GoogleSignInClient mGoogleSignInClient;
-
+    CheckBox check;
     @Override
     protected void onStart() {
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
-        makedialog();
+        check=findViewById(R.id.checkBox);
         if(firebaseUser!=null)
         {
             startActivity(new Intent(Google_Sign_In.this,MainActivity.class));
@@ -71,6 +73,16 @@ public class Google_Sign_In extends AppCompatActivity {
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if(check.isChecked()) {
+                    signIn();
+                }else{
+                    Toast.makeText(Google_Sign_In.this, "Please check the petition", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -92,7 +104,8 @@ public class Google_Sign_In extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                makedialog();
+
             }
         });
         Button btn = findViewById(R.id.pledge);
