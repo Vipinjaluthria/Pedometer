@@ -27,7 +27,6 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
     }
 
     ArrayList<LeaderBoard> leaderBoards;
-
     private Context context;
 
     @NonNull
