@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "614010846567",
+    "firebase_url": "https://final-project-7c669-default-rtdb.firebaseio.com",
     "project_id": "final-project-7c669",
     "storage_bucket": "final-project-7c669.appspot.com"
   },
@@ -13,6 +14,30 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "614010846567-13j0vtgo7dc8t22qqb5lecchhaii2o03.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.j4velin.pedometer",
+            "certificate_hash": "906daed963d698f3ccd6468a103b948ce1737a31"
+          }
+        },
+        {
+          "client_id": "614010846567-mbgfh37iitpajjkosg743lud9hb3tp8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.j4velin.pedometer",
+            "certificate_hash": "0c45cdaaafe960ff60601c538788c8d31c46a216"
+          }
+        },
+        {
+          "client_id": "614010846567-pndgskk5k5uipinf6qshal2797n274k7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.j4velin.pedometer",
+            "certificate_hash": "de6a358bd940daa8c7af922b35f0a47c0bfac782"
+          }
+        },
         {
           "client_id": "614010846567-fku9oai6g3p0pjsdbmh5qe38jgp7lga7.apps.googleusercontent.com",
           "client_type": 3
