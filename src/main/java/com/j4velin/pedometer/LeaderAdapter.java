@@ -43,7 +43,6 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
         if (position == 0) {
             holder.card.setBackgroundResource(R.drawable.leaderboard_bg);
             ViewGroup.LayoutParams params = holder.card.getLayoutParams();
-            ;
             params.height = 800;
             holder.card.setLayoutParams(params);
             int color = Integer.parseInt("ffffff", 16) + 0xFF000000;
