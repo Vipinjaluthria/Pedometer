@@ -87,7 +87,8 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Fragment_Overview extends Fragment implements SensorEventListener {
+public class
+Fragment_Overview extends Fragment implements SensorEventListener {
 
     private TextView stepsView, totalView, averageView;
     private PieModel sliceGoal, sliceCurrent;
@@ -106,7 +107,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     String currentDateTimeString;
     int perc;
     Dialog dialog;
-
+    private String hh="00",mm="00",ss="00";
     private int todayOffset, total_start, goal, since_boot, total_days;
     public final static NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
     private boolean showSteps = true;
@@ -219,9 +220,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 int h   = (int)(time /3600000);
                 int m = (int)(time - h*3600000)/60000;
                 int s= (int)(time - h*3600000- m*60000)/1000 ;
-                String hh = h < 10 ? "0"+h: h+"";
-                String mm = m < 10 ? "0"+m: m+"";
-                String ss = s < 10 ? "0"+s: s+"";
+                 hh = h < 10 ? "0"+h: h+"";
+                 mm = m < 10 ? "0"+m: m+"";
+                 ss = s < 10 ? "0"+s: s+"";
                 if(s>20){stopbtn.setEnabled(false); stopbtn.setClickable(false);}
                 if(Integer.parseInt(stepsView.getText().toString())>=6666){
 
@@ -820,8 +821,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
         View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_option, null);
         Button sharebtn;
-        TextView name=mView.findViewById(R.id.congrats);
-        name.setText("Congratulations! "+firebaseAuth.getCurrentUser().getDisplayName());
+        TextView final_time=mView.findViewById(R.id.time);
+        final_time.setText(hh+":"+mm+":"+ss);
+
 //        closebtn=mView.findViewById(R.id.sports);
         sharebtn = mView.findViewById(R.id.sharebutton);
 

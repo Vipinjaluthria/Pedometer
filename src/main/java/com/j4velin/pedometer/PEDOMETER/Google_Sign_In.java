@@ -55,11 +55,12 @@ public class Google_Sign_In extends AppCompatActivity {
     SignInButton signInButton;
     FirebaseAuth firebaseAuth;
     GoogleSignInClient mGoogleSignInClient;
-    CheckBox check;
+//    CheckBox check;
     @Override
     protected void onStart() {
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
-        check=findViewById(R.id.checkBox);
+//        check=findViewById(R.id.checkBox);
+//        makedialog();
         if(firebaseUser!=null)
         {
             startActivity(new Intent(Google_Sign_In.this,MainActivity.class));
@@ -73,16 +74,6 @@ public class Google_Sign_In extends AppCompatActivity {
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                if(check.isChecked()) {
-                    signIn();
-                }else{
-                    Toast.makeText(Google_Sign_In.this, "Please check the petition", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -104,8 +95,7 @@ public class Google_Sign_In extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makedialog();
-
+                signIn();
             }
         });
         Button btn = findViewById(R.id.pledge);
