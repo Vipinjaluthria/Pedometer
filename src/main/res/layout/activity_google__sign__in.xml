@@ -1,48 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PEDOMETER.Google_Sign_In"
-    android:background="@drawable/bg_image">
+    android:background="@drawable/bg_image"
+    tools:context=".PEDOMETER.Google_Sign_In">
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
+        android:layout_width="206dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="100dp" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="50dp"
+        android:layout_height="2dip"
+        android:layout_below="@id/sign_in_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="60dp"
+        android:background="#CDBBBB" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.534" />
+        android:layout_below="@id/separator"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp">
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.548"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.668">
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        />
-    <Button
-        android:id="@+id/pledge"
-        android:layout_width="246dp"
-        android:layout_height="52dp"
-        android:text="Click here to take A Pledge"
-        android:textAllCaps="false"
-        android:textColor="#4CAF50"
-        android:textFontWeight="700"
-        android:textSize="18dp"
-        />
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text=""
+            android:visibility="gone" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:orientation="horizontal">
 
-</LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:background="@android:color/transparent"
+                android:text="Sign a pledge"
+                android:textAllCaps="false"
+                android:textColor="#4CAF50"
+                android:textSize="18dp" />
+
+            <Button
+                android:id="@+id/pledge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="here"
+                android:layout_marginLeft="-20dp"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

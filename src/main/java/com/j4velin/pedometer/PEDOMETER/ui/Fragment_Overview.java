@@ -893,9 +893,9 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                     startActivity(new Intent(Intent.ACTION_VIEW,
                             Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing")));
                     return true;
-                case R.id.action_about:
-                    startActivity(new Intent(getActivity().getApplicationContext(), AboutActivity.class));
-                    return true;
+//                case R.id.action_about:
+//                    startActivity(new Intent(getActivity().getApplicationContext(), AboutActivity.class));
+//                    return true;
                 case R.id.action_logout:
                     firebaseAuth.signOut();
                     startActivity(new Intent(getActivity().getApplicationContext(), Google_Sign_In.class));

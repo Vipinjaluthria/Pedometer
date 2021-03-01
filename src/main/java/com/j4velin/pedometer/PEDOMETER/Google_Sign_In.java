@@ -93,6 +93,9 @@ public class Google_Sign_In extends AppCompatActivity {
                 .build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        TextView textView = (TextView) signInButton.getChildAt(0);
+        textView.setText("Sign in with Google");
+
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
