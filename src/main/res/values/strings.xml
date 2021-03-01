@@ -63,5 +63,6 @@
     <string name="share">Share</string>
     <string name="todo1">TODO</string>
     <string name="todo2">TODO</string>
-<!--    <string name="pledge"><a href="https://www.ilivesimply.org/pledges">Let's Take A Pledge</a></string>-->
+    <string name="dos"><ul><h2 style="color:#f00">DON\'t CLOSE/MINIMIZE THIS APP</h2><h2 style="color:#f00">DON\'T TAP ANY OTHER BUTTON AFTER STARTING</h2><h2 style="color:#f00">AFTER 20SEC YOU CANNOT STOP</h2><h2 style="color:#f00">IT WILL \"AUTO STOP\" WHEN YOU COMPLETE YOUR JOURNEY</h2></ul></string>
+    <!--    <string name="pledge"><a href="https://www.ilivesimply.org/pledges">Let's Take A Pledge</a></string>-->
 </resources>

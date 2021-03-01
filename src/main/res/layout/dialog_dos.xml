@@ -5,12 +5,13 @@
     >
     <TextView
         android:id="@+id/img"
-        android:layout_width="260dp"
+        android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_height="260dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="45dp"
-        android:text="DONE CLOSE/MINIMIZE THIS APP Don't Tap any other button after starting, after 20s you cannot stop, IT WILL AUTO STOP WHEN YOU COMPLETE YOUR JOURNEY"
+        android:layout_margin="30dp"
+        android:text="@string/dos"
+        android:textSize="14dp"
+        android:textColor="#ff0000"
         android:contentDescription="icon" />
 
 </RelativeLayout>
