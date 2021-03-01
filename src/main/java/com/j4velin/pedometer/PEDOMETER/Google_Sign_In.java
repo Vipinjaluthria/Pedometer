@@ -55,11 +55,11 @@ public class Google_Sign_In extends AppCompatActivity {
     SignInButton signInButton;
     FirebaseAuth firebaseAuth;
     GoogleSignInClient mGoogleSignInClient;
-//    CheckBox check;
+    CheckBox check;
     @Override
     protected void onStart() {
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
-//        check=findViewById(R.id.checkBox);
+        check=findViewById(R.id.checkBox);
 //        makedialog();
         if(firebaseUser!=null)
         {
@@ -95,7 +95,12 @@ public class Google_Sign_In extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                if(check.isChecked()) {
+                    signIn();
+                }
+                else{
+                    Toast.makeText(Google_Sign_In.this, "PLEASE CHECK THE BOX", Toast.LENGTH_LONG).show();
+                }
             }
         });
         Button btn = findViewById(R.id.pledge);
