@@ -1,17 +1,53 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:gravity="center"
+    android:orientation="vertical"
     >
     <TextView
-        android:id="@+id/img"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_height="260dp"
-        android:layout_margin="30dp"
-        android:text="@string/dos"
+        android:layout_height="wrap_content"
+        android:text="DON\'T CLOSE/MINIMIZE THIS APP"
+        android:textSize="14dp"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:textColor="#ff0000"
+        android:contentDescription="icon" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        android:text="DON\'T TAP ANY OTHER BUTTON AFTER STARTING"
+        android:textSize="14dp"
+        android:textColor="#ff0000"
+        android:contentDescription="icon" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="AFTER 20SEC YOU CANNOT STOP"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:textColor="#ff0000"
+        android:contentDescription="icon" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="IT WILL AUTO STOP"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:textColor="#ff0000"
+        android:contentDescription="icon" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="WHEN YOU COMPLETE YOUR JOURNEY"
+        android:textStyle="bold"
         android:textSize="14dp"
         android:textColor="#ff0000"
         android:contentDescription="icon" />
 
-</RelativeLayout>
+</LinearLayout>

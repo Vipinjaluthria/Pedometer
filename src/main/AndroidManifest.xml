@@ -22,7 +22,12 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault.Light.DarkActionBar"
         tools:replace="label">
-        <activity android:name=".PEDOMETER.Google_Sign_In"
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+        <activity
+            android:name=".PEDOMETER.Google_Sign_In"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -32,28 +37,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.j4velin.pedometer.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light">
+            android:theme="@style/Theme.AppCompat.Light"/>
 
-        </activity>
-
-        <receiver android:name="com.j4velin.pedometer.PEDOMETER.BootReceiver">
+        <receiver android:name=".PEDOMETER.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.j4velin.pedometer.PEDOMETER.AppUpdatedReceiver">
+        <receiver android:name=".PEDOMETER.AppUpdatedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 
-        <service android:name="com.j4velin.pedometer.PEDOMETER.SensorListener" />
+        <service android:name=".PEDOMETER.SensorListener" />
         <service
-            android:name="com.j4velin.pedometer.PEDOMETER.widget.DashClock"
+            android:name=".PEDOMETER.widget.DashClock"
             android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
             <intent-filter>
                 <action android:name="com.google.android.apps.dashclock.Extension" />
@@ -71,7 +74,7 @@
         </service>
 
         <activity
-            android:name="com.j4velin.pedometer.PEDOMETER.widget.WidgetConfig"
+            android:name=".PEDOMETER.widget.WidgetConfig"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar">
             <intent-filter>
@@ -79,7 +82,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.j4velin.pedometer.PEDOMETER.widget.Widget">
+        <receiver android:name=".PEDOMETER.widget.Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -90,7 +93,7 @@
         </receiver>
 
         <service
-            android:name="com.j4velin.pedometer.PEDOMETER.widget.WidgetUpdateService"
+            android:name=".PEDOMETER.widget.WidgetUpdateService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>

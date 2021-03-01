@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -44,7 +45,7 @@ public class LeaderboardView extends Fragment {
     GoogleSignInClient mGoogleSignInClient;
     RecyclerView recyclerView;
     Button button;
-
+    public static ShimmerFrameLayout shimmerFrameLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class LeaderboardView extends Fragment {
         View view = inflater.inflate(R.layout.activity_leaderboard, container, false);
         mAuth = FirebaseAuth.getInstance();
         recyclerView = view.findViewById(R.id.recyclerview);
+        shimmerFrameLayout=view.findViewById(R.id.shimmerFrameLayout);
         firebaseDatabase = FirebaseDatabase.getInstance();
         uuid = mAuth.getUid();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -118,69 +120,6 @@ public class LeaderboardView extends Fragment {
 
             }
         });
-
-        /*DatabaseQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                leaderBoardArrayList.clear();
-                String name="PPPPPPP";
-                String time="PPPPPPP";
-                for(DataSnapshot dataSnapshot:snapshot.getChildren())
-                {
-                    if(dataSnapshot.getKey().equals("Name")) {
-                        name = dataSnapshot.getValue().toString();
-                        Log.d("name",name);
-                    }
-                    if(dataSnapshot.getKey().equals("Time"))
-                        time=dataSnapshot.getValue().toString();
-                    Log.d("vipin",dataSnapshot.getValue().toString());
-                    if(!name.equals("PPPPPPP") && !time.equals("PPPPPPP"))
-                        leaderBoardArrayList.add(new LeaderBoard(name,time,time,time));
-
-                }
-                leaderAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                leaderBoardArrayList.clear();
-                String name="PPPPPPP";
-                String time="PPPPPPP";
-                for(DataSnapshot dataSnapshot:snapshot.getChildren())
-                {
-
-                    if(dataSnapshot.getKey().equals("Name")) {
-                        name = dataSnapshot.getValue().toString();
-                        Log.d("name",name);
-                    }
-                    if(dataSnapshot.getKey().equals("Time"))
-                        time=dataSnapshot.getValue().toString();
-                    Log.d("vipin",dataSnapshot.getValue().toString());
-                        if(!name.equals("PPPPPPP") && !time.equals("PPPPPPP"))
-                        leaderBoardArrayList.add(new LeaderBoard(name,time,time,time));
-
-                }
-                leaderAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }*/
 
 
     }

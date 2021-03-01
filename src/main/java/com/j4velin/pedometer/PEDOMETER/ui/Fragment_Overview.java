@@ -43,6 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -74,6 +75,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.j4velin.pedometer.AboutActivity;
 import com.j4velin.pedometer.BuildConfig;
 import com.j4velin.pedometer.MainActivity;
 import com.j4velin.pedometer.PEDOMETER.Database;
@@ -95,19 +97,19 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     private PieChart pg;
     File imagepath;
     TextView username;
-    File file=null;
+    File file = null;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     GoogleSignInClient mGoogleSignInClient;
     Button share;
     String Date;
-     Button button;
+    Button button;
     private TextView progresstext;
     int steps = 0;
     String currentDateTimeString;
     int perc;
     Dialog dialog;
-    private String hh="00",mm="00",ss="00";
+    private String hh = "00", mm = "00", ss = "00";
     private int todayOffset, total_start, goal, since_boot, total_days;
     public final static NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
     private boolean showSteps = true;
@@ -124,21 +126,23 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             getActivity().startService(new Intent(getActivity(), SensorListener.class));
         }
 
-        makedialog2();
+//        makedialog2();
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_overview, null);
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseDatabase=FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
         stepsView = (TextView) v.findViewById(R.id.steps);
         totalView = (TextView) v.findViewById(R.id.total);
         averageView = (TextView) v.findViewById(R.id.average);
-        stopbtn=v.findViewById(R.id.stopbtn);
+        stopbtn = v.findViewById(R.id.stopbtn);
         pg = (PieChart) v.findViewById(R.id.graph);
+        TextView btn = v.findViewById(R.id.rule_booklet);
+        btn.setOnClickListener(v1 -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing"))));
         ImageView img = (ImageView) v.findViewById(R.id.imageView);
-        username=v.findViewById(R.id.username);
+        username = v.findViewById(R.id.username);
         username.setVisibility(View.VISIBLE);
         //Button btn = v.findViewById(R.id.animate);
         SharedPreferences run = getActivity().getSharedPreferences("Database", Context.MODE_PRIVATE);
@@ -147,16 +151,16 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
             run.edit().putBoolean("firstrun", false).apply();
-            editor.putBoolean("today",false).apply();
-            editor.putBoolean("tomorrow",false).apply();
-            editor.putBoolean("dayaftertomorrow",false).apply();
-            editor.putLong("MinimumTime",10000000).apply();
+            editor.putBoolean("today", false).apply();
+            editor.putBoolean("tomorrow", false).apply();
+            editor.putBoolean("dayaftertomorrow", false).apply();
+            editor.putLong("MinimumTime", 10000000).apply();
         }
-         currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        Date=currentDateTimeString.substring(4,6);
-        Log.d("vipin",currentDateTimeString+"/"+Date);
-        Toast.makeText(getActivity(), "TODAY's Date = "+currentDateTimeString, Toast.LENGTH_LONG).show();
-        ActivityCompat.requestPermissions(this.getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        Date = currentDateTimeString.substring(4, 6);
+        Log.d("vipin", currentDateTimeString + "/" + Date);
+//        Toast.makeText(getActivity(), "TODAY's Date = " + currentDateTimeString, Toast.LENGTH_LONG).show();
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
@@ -179,89 +183,99 @@ Fragment_Overview extends Fragment implements SensorEventListener {
 
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
-        String name= acct.getDisplayName();
-        Uri photo= acct.getPhotoUrl();
+        String name = acct.getDisplayName();
+        Uri photo = acct.getPhotoUrl();
 //        Toast.makeText(getActivity(), photo.toString(), Toast.LENGTH_SHORT).show();
-        CircleImageView profileimg=v.findViewById(R.id.profile_image);
+        CircleImageView profileimg = v.findViewById(R.id.profile_image);
         Picasso.with(getActivity()).load(photo).into(profileimg);
-        String[] words=name.split(" ");
-        Toast.makeText(getActivity(), ""+words[0], Toast.LENGTH_SHORT).show();
-        username.setText(words[0]);
-        profileimg.setOnClickListener(new OnClickListener() {
+        profileimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showdialog();
+                showPopupMenu(view);
             }
         });
 
+        String[] words = name.split(" ");
+//        Toast.makeText(getActivity(), "" + words[0], Toast.LENGTH_SHORT).show();
+        username.setText(words[0]);
+//        profileimg.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showdialog();
+//            }
+//        });
 
-        button  =  v.findViewById(R.id.startstop);
-        share=v.findViewById(R.id.share);
+
+        button = v.findViewById(R.id.startstop);
+        share = v.findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-                {ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
 //                Bitmap bitmap=takescreen();
 //                saveBitmap(bitmap);
 //                shareit();
                 View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-                Bitmap bmp=getScreenShot(rootView);
-                store(bmp,"file.png");
+                Bitmap bmp = getScreenShot(rootView);
+                store(bmp, "file.png");
                 shareImage(file);
             }
         });
 
         Chronometer mStopWatch = (Chronometer) v.findViewById(R.id.chronometer);
-        mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+        mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer cArg) {
                 long time = SystemClock.elapsedRealtime() - cArg.getBase();
-                int h   = (int)(time /3600000);
-                int m = (int)(time - h*3600000)/60000;
-                int s= (int)(time - h*3600000- m*60000)/1000 ;
-                 hh = h < 10 ? "0"+h: h+"";
-                 mm = m < 10 ? "0"+m: m+"";
-                 ss = s < 10 ? "0"+s: s+"";
-                if(s>20){stopbtn.setEnabled(false); stopbtn.setClickable(false);}
-                if(Integer.parseInt(stepsView.getText().toString())>=6666){
+                int h = (int) (time / 3600000);
+                int m = (int) (time - h * 3600000) / 60000;
+                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+                hh = h < 10 ? "0" + h : h + "";
+                mm = m < 10 ? "0" + m : m + "";
+                ss = s < 10 ? "0" + s : s + "";
+                if (s > 20) {
+                    stopbtn.setEnabled(false);
+                    stopbtn.setClickable(false);
+                }
+                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
 
-                    Toast.makeText(getActivity(), "You Completed Your Journey in "+hh+":"+mm+":"+ss+" time!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                     makedialog();
                     button.setClickable(false);
                     button.setEnabled(false);
                     stopbtn.setClickable(false);
                     stopbtn.setEnabled(false);
                     mStopWatch.stop();
-                    long MinimumTime=run.getLong("MinimumTime",1000000);
-                    MinimumTime= Math.min(MinimumTime, time);
-                     h   = (int)(MinimumTime /3600000);
-                     m = (int)(MinimumTime - h*3600000)/60000;
-                     s= (int)(MinimumTime - h*3600000- m*60000)/1000 ;
-                     hh = h < 10 ? "0"+h: h+"";
-                     mm = m < 10 ? "0"+m: m+"";
-                     ss = s < 10 ? "0"+s: s+"";
-                    if(m<13 && h==0){
+                    long MinimumTime = run.getLong("MinimumTime", 1000000);
+                    MinimumTime = Math.min(MinimumTime, time);
+                    h = (int) (MinimumTime / 3600000);
+                    m = (int) (MinimumTime - h * 3600000) / 60000;
+                    s = (int) (MinimumTime - h * 3600000 - m * 60000) / 1000;
+                    hh = h < 10 ? "0" + h : h + "";
+                    mm = m < 10 ? "0" + m : m + "";
+                    ss = s < 10 ? "0" + s : s + "";
+                    if (m < 13 && h == 0) {
                         Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
                     }
-                    if(Date.equals("25")) {
+                    if (Date.equals("5")) {
                         editor.putBoolean("today", true).apply();
 
-                        editor.putLong("MinimumTime",MinimumTime);
-                    }
-                    else if(Date.equals("11")) {
+                        editor.putLong("MinimumTime", MinimumTime);
+                    } else if (Date.equals("13")) {
 
                         editor.putBoolean("tomorrow", true).apply();
-                        editor.putLong("MinimumTime",MinimumTime);
-                    }
-                    else if(Date.equals("12")) {
-                        editor.putLong("MinimumTime",MinimumTime);
+                        editor.putLong("MinimumTime", MinimumTime);
+                    } else if (Date.equals("14")) {
+                        editor.putLong("MinimumTime", MinimumTime);
                         editor.putBoolean("dayaftertomorrow", true).apply();
                     }
-                    if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-                    {ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    }
 //                Bitmap bitmap=takescreen();
 //                saveBitmap(bitmap);
 //                shareit();
@@ -272,7 +286,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                     //UPLOAD TO DATABASE TIME
                     //String time=hh+":"+mm+":"+ss;
                 }
-                cArg.setText(hh+":"+mm+":"+ss);
+                cArg.setText(hh + ":" + mm + ":" + ss);
                 set_to_zero();
                 button.setText("START");
             }
@@ -284,15 +298,15 @@ Fragment_Overview extends Fragment implements SensorEventListener {
 //         button  =  v.findViewById(R.id.startstop);
         button.setTag(1);
         button.setText("START");
-        stopbtn.setOnClickListener( new View.OnClickListener() {
+        stopbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v) {
-                    button.setVisibility(View.VISIBLE);
-                    stopbtn.setVisibility(View.INVISIBLE);
-                    mStopWatch.setBase(SystemClock.elapsedRealtime());
-                    mStopWatch.stop();
-                    button.setText("START");
-                    set_to_zero();
+            public void onClick(View v) {
+                button.setVisibility(View.VISIBLE);
+                stopbtn.setVisibility(View.INVISIBLE);
+                mStopWatch.setBase(SystemClock.elapsedRealtime());
+                mStopWatch.stop();
+                button.setText("START");
+                set_to_zero();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -303,34 +317,27 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             }
         });
         ////checking values for shared prefrenece
-        boolean today=run.getBoolean("today",true);
-        boolean tomorrow=run.getBoolean("today",true);
+        boolean today = run.getBoolean("today", true);
+        boolean tomorrow = run.getBoolean("today", true);
 
-        boolean dayaftertomorrow=run.getBoolean("today",true);
-        if(Date.equals("25") && !today)
-        {
+        boolean dayaftertomorrow = run.getBoolean("today", true);
+        if (Date.equals("5") && !today) {
             button.setEnabled(true);
             button.setClickable(true);
 
             stopbtn.setClickable(true);
             stopbtn.setEnabled(true);
-        }
-        else if(Date.equals("11") && !tomorrow)
-        {
+        } else if (Date.equals("13") && !tomorrow) {
             button.setEnabled(true);
             button.setClickable(true);
             stopbtn.setClickable(true);
             stopbtn.setEnabled(true);
-        }
-        else if(Date.equals("12") && !dayaftertomorrow)
-        {
+        } else if (Date.equals("14") && !dayaftertomorrow) {
             button.setEnabled(true);
             button.setClickable(true);
             stopbtn.setClickable(true);
             stopbtn.setEnabled(true);
-        }
-        else
-        {
+        } else {
             button.setEnabled(false);
             button.setClickable(false);
             stopbtn.setClickable(false);
@@ -338,18 +345,18 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         }
 
 
-        int stopbtn_visible= 0;
-        button.setOnClickListener( new View.OnClickListener() {
+        int stopbtn_visible = 0;
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v) {
+            public void onClick(View v) {
                 stopbtn.setVisibility(View.VISIBLE);
                 button.setVisibility(View.INVISIBLE);
                 button.setText("RESTART");
-                final int status =(Integer) v.getTag();
+                final int status = (Integer) v.getTag();
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
 
-                if(Date.equals("25")) {
+                if (Date.equals("5")) {
                     if (!today) {
                         Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
                         mStopWatch.start();
@@ -357,21 +364,15 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                         v.setTag(0);
                         start_again();
                     }
-                }
-                else if(Date.equals("11"))
-                {
-                    if(!tomorrow)
-                    {
+                } else if (Date.equals("13")) {
+                    if (!tomorrow) {
                         mStopWatch.start();
 
                         v.setTag(0);
                         start_again();
                     }
-                }
-                else if(Date.equals("12"))
-                {
-                    if(!dayaftertomorrow)
-                    {
+                } else if (Date.equals("14")) {
+                    if (!dayaftertomorrow) {
                         mStopWatch.start();
 
                         v.setTag(0);
@@ -402,6 +403,14 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         return v;
     }
 
+    private void showPopupMenu(View view) {
+        PopupMenu popup = new PopupMenu(view.getContext(),view );
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
+        popup.show();
+    }
+
     private void showdialog() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
         builder1.setCancelable(false);
@@ -411,7 +420,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         firebaseAuth.signOut();
-                        startActivity(new Intent(getActivity().getApplicationContext(),Google_Sign_In.class));
+                        startActivity(new Intent(getActivity().getApplicationContext(), Google_Sign_In.class));
                         getActivity().finish();
                     }
                 });
@@ -428,7 +437,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         alert11.show();
     }
 
-    public void set_to_zero(){
+    public void set_to_zero() {
         totalView.setText(String.valueOf(0));
         stepsView.setText(String.valueOf(0));
         averageView.setText(String.valueOf(0));
@@ -446,14 +455,15 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             db.addToLastEntry(0);
             db.saveCurrentSteps(0);
             db.close();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             Toast.makeText(getActivity(), "FAILED!!", Toast.LENGTH_SHORT).show();
         }
 
 //        API26Wrapper.startForeground(NOTIFICATION_ID, SensorListener.getNotification_to_Zero(getActivity()));
 
     }
-    public void start_again(){
+
+    public void start_again() {
         set_to_zero();
 
         Database db = Database.getInstance(getActivity());
@@ -503,7 +513,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
-  //      getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+        //      getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
 //
 //        Database db = Database.getInstance(getActivity());
 //
@@ -744,10 +754,11 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         return bitmap;
 
     }
-    public void store(Bitmap bm, String fileName){
+
+    public void store(Bitmap bm, String fileName) {
         final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
         File dir = new File(dirPath);
-        if(!dir.exists())
+        if (!dir.exists())
             dir.mkdirs();
         file = new File(dirPath, fileName);
         try {
@@ -758,10 +769,11 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         } catch (Exception e) {
             e.printStackTrace();
 
-            Toast toast = Toast.makeText(getActivity(),"FAILED",Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getActivity(), "FAILED", Toast.LENGTH_SHORT);
         }
     }
-    private void shareImage(File file){
+
+    private void shareImage(File file) {
         Uri uri = Uri.fromFile(file);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
@@ -778,36 +790,37 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
     public void makedialog2() {
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-            View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_dos, null);
-            mBuilder.setView(mView);
-            final AlertDialog dialog = mBuilder.create();
-            dialog.show();
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_dos, null);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
     }
 
-    public void saveBitmap(Bitmap bitmap){
-        imagepath=new File(Environment.getExternalStorageDirectory() +"/Pictures/"+"screenshot.jpg");
+    public void saveBitmap(Bitmap bitmap) {
+        imagepath = new File(Environment.getExternalStorageDirectory() + "/Pictures/" + "screenshot.jpg");
         FileOutputStream fos;
         String path;
         //File file=new File(path);
-        try{
-            fos=new FileOutputStream(imagepath);
-            bitmap.compress(Bitmap.CompressFormat.PNG,100,fos);
+        try {
+            fos = new FileOutputStream(imagepath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
-        } catch(IOException ignored){
+        } catch (IOException ignored) {
         }
     }
-    public void shareit(){
-        Uri path= FileProvider.getUriForFile(getActivity(),"com.alcheringa.circularprogressbar",imagepath);
-        Intent share=new Intent();
+
+    public void shareit() {
+        Uri path = FileProvider.getUriForFile(getActivity(), "com.alcheringa.circularprogressbar", imagepath);
+        Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND);
         share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         Uri uri = Uri.fromFile(imagepath);
         share.putExtra(Intent.EXTRA_STREAM, uri);
 //        share.putExtra(Intent.EXTRA_STREAM,path);
         share.setType("image/*");
-        startActivity(Intent.createChooser(share,"Share..."));
+        startActivity(Intent.createChooser(share, "Share..."));
 //        Intent intent = new Intent(Intent.ACTION_VIEW);
 //        Uri uri = Uri.fromFile(imagepath);
 //        intent.setDataAndType(uri,"image/jpeg");
@@ -816,13 +829,13 @@ Fragment_Overview extends Fragment implements SensorEventListener {
 
     }
 
-    private void makedialog(){
-       AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+    private void makedialog() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 
         View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_option, null);
         Button sharebtn;
-        TextView final_time=mView.findViewById(R.id.time);
-        final_time.setText(hh+":"+mm+":"+ss);
+        TextView final_time = mView.findViewById(R.id.time);
+        final_time.setText(hh + ":" + mm + ":" + ss);
 
 //        closebtn=mView.findViewById(R.id.sports);
         sharebtn = mView.findViewById(R.id.sharebutton);
@@ -838,8 +851,9 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         sharebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-                {ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);}
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
 //                Bitmap bitmap=takescreen();
 //                saveBitmap(bitmap);
 //                shareit();
@@ -847,8 +861,8 @@ Fragment_Overview extends Fragment implements SensorEventListener {
 //                takeScreenshot(dialog2);
 
                 View rootView = dialog.getWindow().getDecorView().findViewById(android.R.id.content);
-                Bitmap bmp=getScreenShot(rootView);
-                store(bmp,"file.png");
+                Bitmap bmp = getScreenShot(rootView);
+                store(bmp, "file.png");
                 shareImage(file);
                 dialog.cancel();
             }
@@ -856,14 +870,13 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
 
-
-    private void addToDatabase(String uuid,String steps,String time) {
-        HashMap<String,Object> hashMap=new HashMap<>();
-        hashMap.put("Photo",firebaseAuth.getCurrentUser().getPhotoUrl().toString());
-        hashMap.put("Name",firebaseAuth.getCurrentUser().getDisplayName());
-        hashMap.put("Steps",steps);
+    private void addToDatabase(String uuid, String steps, String time) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("Photo", firebaseAuth.getCurrentUser().getPhotoUrl().toString());
+        hashMap.put("Name", firebaseAuth.getCurrentUser().getDisplayName());
+        hashMap.put("Steps", steps);
         hashMap.put("Time", time);
-        hashMap.put("Email",firebaseAuth.getCurrentUser().getEmail());
+        hashMap.put("Email", firebaseAuth.getCurrentUser().getEmail());
         firebaseDatabase.getReference().child("USERS").child(uuid).updateChildren(hashMap).addOnSuccessListener(aVoid ->
                 Toast.makeText(getActivity(), "Successful", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e ->
@@ -871,4 +884,25 @@ Fragment_Overview extends Fragment implements SensorEventListener {
 
     }
 
+    private class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_rule_booklet:
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing")));
+                    return true;
+                case R.id.action_about:
+                    startActivity(new Intent(getActivity().getApplicationContext(), AboutActivity.class));
+                    return true;
+                case R.id.action_logout:
+                    firebaseAuth.signOut();
+                    startActivity(new Intent(getActivity().getApplicationContext(), Google_Sign_In.class));
+                    getActivity().finish();
+                default:
+            }
+            return false;
+        }
+    }
 }

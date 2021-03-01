@@ -2,6 +2,7 @@ package com.j4velin.pedometer;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.Shimmer;
+import com.facebook.shimmer.ShimmerDrawable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,6 +42,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
 
     @Override
     public void onBindViewHolder(@NonNull LeaderView holder, int position) {
+
         if (position == 0) {
             holder.card.setBackgroundResource(R.drawable.leaderboard_bg);
             ViewGroup.LayoutParams params = holder.card.getLayoutParams();
@@ -60,6 +64,9 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
         } catch (Exception e) {
             holder.imageView.setImageResource(R.drawable.round_button);
         }
+
+        LeaderboardView.shimmerFrameLayout.setVisibility(View.GONE);
+
         holder.textView.setText(leaderBoards.get(position).getName());
         holder.timeview.setText(leaderBoards.get(position).getTime());
         holder.idview.setText(String.valueOf(position + 1));

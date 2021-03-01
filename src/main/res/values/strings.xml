@@ -46,7 +46,6 @@
     <string name="total_this_month">Total this month</string>
     <string name="average_this_month">Average this month</string>
     <string name="file_already_exists">File already exists. Are you sure you want to overwrite it?</string>
-    <string name="about_text_links">This app was created by Thomas Hoffmann (<a href="https://www.j4velin.de">www.j4velin.de</a>) and uses <a href="https://github.com/blackfizz/EazeGraph">EazeGraph</a> by Paul Cech and <a href="https://github.com/attenzione/android-ColorPickerPreference">ColorPickerPreference</a> by Sergey Margaritov.\n\nPedometer is open source! Get the code and the full list of contributors from <a href="https://github.com/j4velin/Pedometer">GitHub</a>.\n\n</string>
     <string name="about_app_version">App version: %s</string>
     <string name="since">Since %s</string>
     <string name="start">Start</string>
@@ -63,6 +62,5 @@
     <string name="share">Share</string>
     <string name="todo1">TODO</string>
     <string name="todo2">TODO</string>
-    <string name="dos"><ul><h2 style="color:#f00">DON\'t CLOSE/MINIMIZE THIS APP</h2><h2 style="color:#f00">DON\'T TAP ANY OTHER BUTTON AFTER STARTING</h2><h2 style="color:#f00">AFTER 20SEC YOU CANNOT STOP</h2><h2 style="color:#f00">IT WILL \"AUTO STOP\" WHEN YOU COMPLETE YOUR JOURNEY</h2></ul></string>
     <!--    <string name="pledge"><a href="https://www.ilivesimply.org/pledges">Let's Take A Pledge</a></string>-->
 </resources>

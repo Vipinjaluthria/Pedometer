@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
+        makedialog2();;
         loadFragment(new Fragment_Overview());
 
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 23 && PermissionChecker
@@ -57,6 +59,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
+    public void makedialog2() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_dos, null);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+    }
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -101,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 builder.setTitle(R.string.about);
                 TextView tv = new TextView(this);
                 tv.setPadding(10, 10, 10, 10);
-                tv.setText(R.string.about_text_links);
+                tv.setText("Copyright Alcher");
                 try {
                     tv.append(getString(R.string.about_app_version,
                             getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
