@@ -68,6 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -91,7 +92,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class
 Fragment_Overview extends Fragment implements SensorEventListener {
-
+    TextView unitid;
     private TextView stepsView, totalView, averageView;
     private PieModel sliceGoal, sliceCurrent;
     private PieChart pg;
@@ -135,12 +136,13 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         stepsView = (TextView) v.findViewById(R.id.steps);
+        unitid=v.findViewById(R.id.unit);
         totalView = (TextView) v.findViewById(R.id.total);
         averageView = (TextView) v.findViewById(R.id.average);
         stopbtn = v.findViewById(R.id.stopbtn);
         pg = (PieChart) v.findViewById(R.id.graph);
         TextView btn = v.findViewById(R.id.rule_booklet);
-        btn.setOnClickListener(v1 -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing"))));
+        btn.setOnClickListener(v1 -> makedialogrule());
         ImageView img = (ImageView) v.findViewById(R.id.imageView);
         username = v.findViewById(R.id.username);
         username.setVisibility(View.VISIBLE);
@@ -388,12 +390,12 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         // slice for the "missing" steps until reaching the goal
         sliceGoal = new PieModel("", Fragment_Settings.DEFAULT_GOAL, Color.parseColor("#F99E2B"));
         pg.addPieSlice(sliceGoal);
-
+//        stepsDistanceChanged();
         pg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View view) {
-                showSteps = !showSteps;
-                stepsDistanceChanged();
+//                showSteps = !showSteps;
+//                stepsDistanceChanged();
             }
         });
 
@@ -565,16 +567,10 @@ Fragment_Overview extends Fragment implements SensorEventListener {
      */
     private void stepsDistanceChanged() {
         if (showSteps) {
-            ((TextView) getView().findViewById(R.id.unit)).setText(getString(R.string.steps));
+            unitid.setText(getString(R.string.steps));
         } else {
-            String unit = getActivity().getSharedPreferences("pedometer", Context.MODE_PRIVATE)
-                    .getString("stepsize_unit", Fragment_Settings.DEFAULT_STEP_UNIT);
-            if (unit.equals("cm")) {
-                unit = "km";
-            } else {
-                unit = "mi";
-            }
-            ((TextView) getView().findViewById(R.id.unit)).setText(unit);
+            String unit = "km";
+            unitid.setText(unit);
         }
 
         updatePie();
@@ -797,6 +793,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         dialog.show();
     }
 
+
     public void saveBitmap(Bitmap bitmap) {
         imagepath = new File(Environment.getExternalStorageDirectory() + "/Pictures/" + "screenshot.jpg");
         FileOutputStream fos;
@@ -883,6 +880,21 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show());
 
     }
+    public void makedialogrule() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_pdf, null);
+        mBuilder.setView(mView);
+        PDFView pdfView;
+        pdfView=mView.findViewById(R.id.pdfView);
+        pdfView.fromAsset("rule.pdf")
+                .enableSwipe(true) // allows to block changing pages using swipe
+                .swipeHorizontal(false)
+                .enableDoubletap(true)
+                .defaultPage(0)
+                .load();
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+    }
 
     private class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
@@ -890,8 +902,9 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_rule_booklet:
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing")));
+                       makedialogrule();
+//                    startActivity(new Intent(Intent.ACTION_VIEW,
+//                            Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing")));
                     return true;
 //                case R.id.action_about:
 //                    startActivity(new Intent(getActivity().getApplicationContext(), AboutActivity.class));

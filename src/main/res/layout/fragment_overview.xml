@@ -177,8 +177,9 @@
 
     <View
         android:id="@+id/separator"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="2dip"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/stopbtn"
         android:layout_centerVertical="true"
         android:layout_marginLeft="60dp"
