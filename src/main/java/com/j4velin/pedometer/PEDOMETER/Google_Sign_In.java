@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
@@ -95,6 +96,7 @@ public class Google_Sign_In extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         TextView textView = (TextView) signInButton.getChildAt(0);
         textView.setText("Sign in with Google");
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override

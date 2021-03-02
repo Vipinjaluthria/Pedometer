@@ -9,10 +9,10 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="206dp"
-        android:layout_height="wrap_content"
+        android:layout_width="216dp"
+        android:layout_height="60dp"
         android:layout_centerInParent="true"
-        android:layout_marginStart="100dp" />
+        android:layout_centerHorizontal="true"/>
 
     <View
         android:id="@+id/separator"

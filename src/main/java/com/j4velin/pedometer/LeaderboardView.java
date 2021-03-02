@@ -35,6 +35,8 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.j4velin.pedometer.PEDOMETER.ui.Fragment_Overview.LOGGEDINname;
+
 
 public class LeaderboardView extends Fragment {
     FirebaseDatabase firebaseDatabase;
@@ -43,6 +45,7 @@ public class LeaderboardView extends Fragment {
     ArrayList<LeaderBoard> leaderBoardArrayList;
     LeaderAdapter leaderAdapter;
     GoogleSignInClient mGoogleSignInClient;
+    public static String OWN_POSTION;
     RecyclerView recyclerView;
     Button button;
     public static ShimmerFrameLayout shimmerFrameLayout;
@@ -72,6 +75,8 @@ public class LeaderboardView extends Fragment {
         getData();
         leaderAdapter = new LeaderAdapter(leaderBoardArrayList);
         recyclerView.setAdapter(leaderAdapter);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
         return view;
 
     }
@@ -123,5 +128,7 @@ public class LeaderboardView extends Fragment {
 
 
     }
+
+
 }
 

@@ -6,6 +6,7 @@
     android:padding="5dp"
     tools:context="com.j4velin.pedometer.PEDOMETER.ui.Fragment_Overview">
 
+
     <org.eazegraph.lib.charts.PieChart
         android:id="@+id/graph"
         android:layout_width="wrap_content"
@@ -13,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="115dp"
         app:egHighlightStrength="1"
-        app:egInnerPadding="90"
+        app:egInnerPadding="92"
         app:egLegendHeight="0dp" />
 
     <Chronometer
@@ -43,149 +44,74 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/chronometer"
         android:layout_centerHorizontal="true"
-        android:text="Your Time"
+        android:text="km"
         android:textSize="20sp" />
 
-    <LinearLayout
-        android:id="@+id/averageandtotal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/graph"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="20dp"
-        android:visibility="invisible">
 
-        <TextView
-            android:id="@+id/average"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/total"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/averageandtotaltext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/averageandtotal"
-        android:visibility="invisible">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="@string/average" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="@string/total" />
-    </LinearLayout>
-
-    <org.eazegraph.lib.charts.BarChart xmlns:eaze="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bargraph"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_below="@+id/averageandtotaltext"
-        android:layout_marginTop="50dp"
-        eaze:egLegendHeight="35dp"
-        eaze:egShowValues="true" />
-
-    <!--    <Chronometer-->
-    <!--        android:id="@+id/chronometer"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_below="@+id/bargraph"-->
-    <!--        android:textSize="50sp"-->
-    <!--        android:layout_centerHorizontal="true"-->
-    <!--        android:text="time" />-->
-
-
-    <Button
-        android:id="@+id/startstop"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/graph"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/round_button"
-        android:text="START"
-        android:textColor="#FFFFFF"
-        android:textFontWeight="700"
-        android:textSize="30dp" />
-
-    <!--        <Button-->
-    <!--            android:visibility=""-->
-    <!--            android:id="@+id/stopbtn"-->
-    <!--            android:layout_width="150dp"-->
-    <!--            android:layout_height="70dp"-->
-    <!--            android:text="STOP"-->
-    <!--            android:background="@drawable/round_button"-->
-    <!--            android:textColor="#FFFFFF"-->
-    <!--            android:textFontWeight="700"-->
-    <!--            android:textSize="30dp"/>-->
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="15dp"-->
-    <!--        android:layout_below="@+id/buttons"-->
-    <!--        android:layout_centerHorizontal="true"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        android:id="@+id/stopbuttons">-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/startstop"-->
-    <!--            android:layout_width="150dp"-->
-    <!--            android:layout_height="match_parent"-->
-    <!--            android:layout_marginRight="10dp"-->
-    <!--            android:background="@drawable/round_button"-->
-    <!--            android:text="START"-->
-    <!--            android:textColor="#FFFFFF"-->
-    <!--            android:textFontWeight="700"-->
-    <!--            android:textSize="30dp" />-->
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Run tracker is not active"
+    android:layout_below="@+id/graph"
+    android:fontFamily="@font/sf"
+    android:textColor="#8C8C8C"
+    android:layout_centerHorizontal="true"
+    android:layout_margin="18dp"
+    android:textSize="15dp"
+    android:id="@+id/text_active"
+    />
 
     <Button
         android:id="@+id/stopbtn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/graph"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:layout_below="@+id/text_active"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/round_button"
-        android:text="STOP"
+        android:fontFamily="@font/sfmedium"
+        android:text="Stop and retry"
+        android:textAllCaps="false"
         android:textColor="#FFFFFF"
+        android:elevation="2dp"
+        android:translationZ="2dp"
+        android:stateListAnimator="@null"
         android:textFontWeight="700"
         android:textSize="30dp"
-        android:visibility="invisible" />
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/startstop"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:layout_below="@+id/text_active"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/round_button"
+        android:fontFamily="@font/sfmedium"
+        android:text="Start Run"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:elevation="2dp"
+        android:translationZ="2dp"
+        android:stateListAnimator="@null"
+        android:textFontWeight="700"
+        android:textSize="30dp" />
+
 
     <View
         android:id="@+id/separator"
-        android:layout_width="180dp"
+        android:layout_width="272dp"
         android:layout_height="2dip"
+        android:layout_below="@id/text_active"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/stopbtn"
         android:layout_centerVertical="true"
         android:layout_marginLeft="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="86dp"
         android:layout_marginRight="60dp"
-        android:background="#CDBBBB" />
+        android:background="#D6D6D6" />
 
     <TextView
         android:id="@+id/rule_booklet"
@@ -194,15 +120,15 @@
         android:layout_below="@id/separator"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/sfmedium"
         android:text="Rule Booklet"
         android:textColor="#000000"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textSize="22sp" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="100dp"
+        android:layout_width="34dp"
+        android:layout_height="76dp"
         android:layout_margin="20dp"
         android:background="@drawable/prithvi"
         android:contentDescription="@string/todo"
@@ -219,11 +145,11 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/test"
             app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
+            app:civ_border_width="1dp" />
 
         <TextView
             android:id="@+id/username"

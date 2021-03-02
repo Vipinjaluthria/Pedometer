@@ -14,6 +14,7 @@
 
         <TextView
             android:id="@+id/idview"
+            android:fontFamily="@font/sf"
             android:layout_width="31dp"
             android:text="1"
             android:layout_height="match_parent"
@@ -29,13 +30,14 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/circleimageview"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="25dp"
+            android:layout_marginStart="30dp"
             android:layout_marginBottom="0dp"
             android:paddingBottom="10dp"
+            android:fontFamily="@font/sf"
             android:src="#ff0000" />
 
         <TextView
@@ -45,6 +47,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="45dp"
             android:layout_marginEnd="85dp"
+            android:fontFamily="@font/sf"
             android:layout_marginBottom="0dp"
             android:layout_toEndOf="@+id/idview"
             android:gravity="bottom"
@@ -58,6 +61,7 @@
         <TextView
             android:id="@+id/timeview"
             android:layout_width="94dp"
+            android:fontFamily="@font/sf"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="3dp"

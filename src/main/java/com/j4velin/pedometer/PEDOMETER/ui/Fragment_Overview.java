@@ -93,9 +93,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class
 Fragment_Overview extends Fragment implements SensorEventListener {
     TextView unitid;
-    private TextView stepsView, totalView, averageView;
+    TextView text_active;
+    private TextView stepsView;
     private PieModel sliceGoal, sliceCurrent;
     private PieChart pg;
+    public static String LOGGEDINname;
     File imagepath;
     TextView username;
     File file = null;
@@ -127,7 +129,6 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             getActivity().startService(new Intent(getActivity(), SensorListener.class));
         }
 
-//        makedialog2();
     }
 
     @Override
@@ -137,8 +138,6 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         firebaseDatabase = FirebaseDatabase.getInstance();
         stepsView = (TextView) v.findViewById(R.id.steps);
         unitid=v.findViewById(R.id.unit);
-        totalView = (TextView) v.findViewById(R.id.total);
-        averageView = (TextView) v.findViewById(R.id.average);
         stopbtn = v.findViewById(R.id.stopbtn);
         pg = (PieChart) v.findViewById(R.id.graph);
         TextView btn = v.findViewById(R.id.rule_booklet);
@@ -146,6 +145,8 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         ImageView img = (ImageView) v.findViewById(R.id.imageView);
         username = v.findViewById(R.id.username);
         username.setVisibility(View.VISIBLE);
+        text_active=v.findViewById(R.id.text_active);
+        LOGGEDINname = firebaseAuth.getCurrentUser().getDisplayName();
         //Button btn = v.findViewById(R.id.animate);
         SharedPreferences run = getActivity().getSharedPreferences("Database", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = run.edit();
@@ -160,6 +161,9 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         }
         currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         Date = currentDateTimeString.substring(4, 6);
+        String[] Date1 = Date.split(",");
+        Date = Date1[0];
+
         Log.d("vipin", currentDateTimeString + "/" + Date);
 //        Toast.makeText(getActivity(), "TODAY's Date = " + currentDateTimeString, Toast.LENGTH_LONG).show();
         ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -263,7 +267,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                     } else {
                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
                     }
-                    if (Date.equals("5")) {
+                    if (Date.equals("2")) {
                         editor.putBoolean("today", true).apply();
 
                         editor.putLong("MinimumTime", MinimumTime);
@@ -290,7 +294,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                 }
                 cArg.setText(hh + ":" + mm + ":" + ss);
                 set_to_zero();
-                button.setText("START");
+                button.setText("Start Run");
             }
 
 
@@ -304,6 +308,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 button.setVisibility(View.VISIBLE);
+                text_active.setVisibility(View.VISIBLE);
                 stopbtn.setVisibility(View.INVISIBLE);
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
@@ -321,20 +326,20 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         ////checking values for shared prefrenece
         boolean today = run.getBoolean("today", true);
         boolean tomorrow = run.getBoolean("today", true);
-
+        Toast.makeText(getActivity(), "TODAY="+today, Toast.LENGTH_SHORT).show();
         boolean dayaftertomorrow = run.getBoolean("today", true);
-        if (Date.equals("5") && !today) {
+        if (Date.equals("2") && today) {
             button.setEnabled(true);
             button.setClickable(true);
 
             stopbtn.setClickable(true);
             stopbtn.setEnabled(true);
-        } else if (Date.equals("13") && !tomorrow) {
+        } else if (Date.equals("13") && tomorrow) {
             button.setEnabled(true);
             button.setClickable(true);
             stopbtn.setClickable(true);
             stopbtn.setEnabled(true);
-        } else if (Date.equals("14") && !dayaftertomorrow) {
+        } else if (Date.equals("14") && dayaftertomorrow) {
             button.setEnabled(true);
             button.setClickable(true);
             stopbtn.setClickable(true);
@@ -353,13 +358,13 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             public void onClick(View v) {
                 stopbtn.setVisibility(View.VISIBLE);
                 button.setVisibility(View.INVISIBLE);
-                button.setText("RESTART");
+                text_active.setVisibility(View.INVISIBLE);
                 final int status = (Integer) v.getTag();
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
 
-                if (Date.equals("5")) {
-                    if (!today) {
+                if (Date.equals("2")) {
+                    if (today) {
                         Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
                         mStopWatch.start();
 
@@ -440,9 +445,9 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
     public void set_to_zero() {
-        totalView.setText(String.valueOf(0));
+//        totalView.setText(String.valueOf(0));
         stepsView.setText(String.valueOf(0));
-        averageView.setText(String.valueOf(0));
+//        averageView.setText(String.valueOf(0));
 
 
         SharedPreferences prefs =
@@ -574,7 +579,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         }
 
         updatePie();
-        updateBars();
+
     }
 
     @Override
@@ -661,8 +666,8 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         pg.update();
         if (showSteps) {
             stepsView.setText(formatter.format(steps_today));
-            totalView.setText(formatter.format(total_start + steps_today));
-            averageView.setText(formatter.format((total_start + steps_today) / total_days));
+//            totalView.setText(formatter.format(total_start + steps_today));
+//            averageView.setText(formatter.format((total_start + steps_today) / total_days));
         } else {
             // update only every 10 steps when displaying distance
             SharedPreferences prefs =
@@ -679,8 +684,8 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                 distance_total /= 5280;
             }
             stepsView.setText(formatter.format(distance_today));
-            totalView.setText(formatter.format(distance_total));
-            averageView.setText(formatter.format(distance_total / total_days));
+//            totalView.setText(formatter.format(distance_total));
+//            averageView.setText(formatter.format(distance_total / total_days));
         }
     }
 
@@ -688,59 +693,6 @@ Fragment_Overview extends Fragment implements SensorEventListener {
      * Updates the bar graph to show the steps/distance of the last week. Should
      * be called when switching from step count to distance.
      */
-    private void updateBars() {
-        SimpleDateFormat df = new SimpleDateFormat("E", Locale.getDefault());
-        BarChart barChart = (BarChart) getView().findViewById(R.id.bargraph);
-        if (barChart.getData().size() > 0) barChart.clearChart();
-        int steps;
-        float distance, stepsize = Fragment_Settings.DEFAULT_STEP_SIZE;
-        boolean stepsize_cm = true;
-        if (!showSteps) {
-            // load some more settings if distance is needed
-            SharedPreferences prefs =
-                    getActivity().getSharedPreferences("pedometer", Context.MODE_PRIVATE);
-            stepsize = prefs.getFloat("stepsize_value", Fragment_Settings.DEFAULT_STEP_SIZE);
-            stepsize_cm = prefs.getString("stepsize_unit", Fragment_Settings.DEFAULT_STEP_UNIT)
-                    .equals("cm");
-        }
-        barChart.setShowDecimal(!showSteps); // show decimal in distance view only
-        BarModel bm;
-        Database db = Database.getInstance(getActivity());
-        List<Pair<Long, Integer>> last = db.getLastEntries(8);
-        db.close();
-        for (int i = last.size() - 1; i > 0; i--) {
-            Pair<Long, Integer> current = last.get(i);
-            steps = current.second;
-            if (steps > 0) {
-                bm = new BarModel(df.format(new Date(current.first)), 0,
-                        steps > goal ? Color.parseColor("#99CC00") : Color.parseColor("#0099cc"));
-                if (showSteps) {
-                    bm.setValue(steps);
-                } else {
-                    distance = steps * stepsize;
-                    if (stepsize_cm) {
-                        distance /= 100000;
-                    } else {
-                        distance /= 5280;
-                    }
-                    distance = Math.round(distance * 1000) / 1000f; // 3 decimals
-                    bm.setValue(distance);
-                }
-                barChart.addBar(bm);
-            }
-        }
-        if (barChart.getData().size() > 0) {
-            barChart.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    Dialog_Statistics.getDialog(getActivity(), since_boot).show();
-                }
-            });
-            barChart.startAnimation();
-        } else {
-            barChart.setVisibility(View.GONE);
-        }
-    }
 
     public static Bitmap getScreenShot(View view) {
         View screenView = view.getRootView();
@@ -901,14 +853,6 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.action_rule_booklet:
-                       makedialogrule();
-//                    startActivity(new Intent(Intent.ACTION_VIEW,
-//                            Uri.parse("https://drive.google.com/file/d/1UztPRsDf4rpMVZMPef2qI6Kyfsv1sr6r/view?usp=sharing")));
-                    return true;
-//                case R.id.action_about:
-//                    startActivity(new Intent(getActivity().getApplicationContext(), AboutActivity.class));
-//                    return true;
                 case R.id.action_logout:
                     firebaseAuth.signOut();
                     startActivity(new Intent(getActivity().getApplicationContext(), Google_Sign_In.class));

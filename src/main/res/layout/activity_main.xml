@@ -18,11 +18,11 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="84dp"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:menu="@menu/menu_bottom"
-        android:elevation="10dp"/>
+        android:elevation="15dp"/>
 </RelativeLayout>
