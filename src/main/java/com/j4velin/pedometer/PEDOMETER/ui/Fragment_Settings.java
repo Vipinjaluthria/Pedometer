@@ -65,8 +65,8 @@ import com.j4velin.pedometer.PEDOMETER.SensorListener;
 public class Fragment_Settings extends PreferenceFragment implements OnPreferenceClickListener {
 
     final static int DEFAULT_GOAL = 6667;
-    final static float DEFAULT_STEP_SIZE = Locale.getDefault() == Locale.US ? 2.5f : 75f;
-    final static String DEFAULT_STEP_UNIT = Locale.getDefault() == Locale.US ? "ft" : "cm";
+    final static float DEFAULT_STEP_SIZE =  75f;
+    final static String DEFAULT_STEP_UNIT = "cm";
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

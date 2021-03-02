@@ -3,6 +3,7 @@ package com.j4velin.pedometer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.PermissionChecker;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.multidex.BuildConfig;
 
 import android.Manifest;
@@ -75,73 +76,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    public boolean optionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStackImmediate();
-                break;
-            case R.id.action_settings:
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new Fragment_Settings()).addToBackStack(null)
-                        .commit();
-                break;
-            case R.id.action_leaderboard:
-            case R.id.action_achievements:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setTitle("Google services required");
-                builder2.setMessage(
-                        "This feature is not available on the F-Droid version of the app");
-                builder2.setNegativeButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                builder2.create().show();
-                break;
-            case R.id.action_faq:
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://j4velin.de/faq/index.php?app=pm"))
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                break;
-            case R.id.action_about:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.about);
-                TextView tv = new TextView(this);
-                tv.setPadding(10, 10, 10, 10);
-                tv.setText("Copyright Alcher");
-                try {
-                    tv.append(getString(R.string.about_app_version,
-                            getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
-                } catch (PackageManager.NameNotFoundException e1) {
-                    // should not happen as the app is definitely installed when
-                    // seeing the dialog
-                    e1.printStackTrace();
-                }
-                tv.setMovementMethod(LinkMovementMethod.getInstance());
-                builder.setView(tv);
-                builder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                builder.create().show();
-                break;
-        }
-        return true;
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
+        Fragment fragment = new Fragment_Overview();
 
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                fragment = new Fragment_Overview();
-                break;
+//            case R.id.nav_home:
+//                fragment = new Fragment_Overview();
+//                break;
 
             case R.id.nav_leaderboard:
                 fragment = new LeaderboardView();
@@ -157,21 +100,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
             return true;
         }
-//        if (fragment != null) {
-//
-//            Fragment newFragment = new Fragment_Overview();
-//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//
-//            transaction.replace(android.R.id.content, newFragment);
-//            // Commit the transaction
-//            transaction.commit();
-//
-//            return true;
-//        }
-
 
         return false;
     }

@@ -62,7 +62,7 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
             holder.imageView.getLayoutParams().width = 176;
             holder.imageView.requestLayout();
 
-            holder.textView.setText("     "+leaderBoards.get(position).getName()+" \n    "+leaderBoards.get(position).getTime());
+            holder.textView.setText("     "+leaderBoards.get(position).getName()+" \n     "+leaderBoards.get(position).getTime());
             holder.textView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
             holder.textView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
             holder.textView.requestLayout();
