@@ -49,10 +49,10 @@ android {
 
     signingConfigs {
         release {
-        storeFile file('C:\\Users\\SHUBHAM\\shubham.jks')
-            storePassword 'shivam12'
-            keyAlias 'shubham'
-            keyPassword 'shivam12'
+        storeFile file('d:\\AndroidStudioProjects\\alcher2020\\alcher.jks')
+            storePassword '123456789'
+            keyAlias 'key0'
+            keyPassword '123456789'
         }
         release
     }

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.Shimmer;
 import com.facebook.shimmer.ShimmerDrawable;
+import com.shashank.sony.fancytoastlib.FancyToast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -94,10 +95,12 @@ public class LeaderAdapter extends RecyclerView.Adapter<LeaderView> {
         }
         if(leaderBoards.get(position).getName().equals(LOGGEDINname)){
             int k=position+1;
-            Toast.makeText(context,"You're at position "+k, Toast.LENGTH_SHORT).show();
+            FancyToast.makeText(context,"You're at position "+k,FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
+//            Toast.makeText(context,"You're at position "+k, Toast.LENGTH_SHORT).show();
         }}
         catch(Exception e){
-            Toast.makeText(context, "FAILED TO FETCH! TRY AFTER SOMETIME", Toast.LENGTH_SHORT).show();
+            FancyToast.makeText(context,"FAILED TO FETCH! TRY AFTER SOMETIME",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
+//            Toast.makeText(context, "FAILED TO FETCH! TRY AFTER SOMETIME", Toast.LENGTH_SHORT).show();
         }
     }
 

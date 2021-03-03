@@ -1,7 +1,6 @@
 package com.j4velin.pedometer.PEDOMETER.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -11,16 +10,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,50 +25,22 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.util.Log;
-import android.util.Pair;
-import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import android.widget.PopupMenu;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-
-import org.eazegraph.lib.charts.BarChart;
-import org.eazegraph.lib.charts.PieChart;
-import org.eazegraph.lib.models.BarModel;
-import org.eazegraph.lib.models.PieModel;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -80,59 +48,72 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.j4velin.pedometer.AboutActivity;
 import com.j4velin.pedometer.BuildConfig;
-
-import com.j4velin.pedometer.MainActivity;
 import com.j4velin.pedometer.PEDOMETER.Database;
 import com.j4velin.pedometer.PEDOMETER.Google_Sign_In;
-import com.j4velin.pedometer.R;
 import com.j4velin.pedometer.PEDOMETER.SensorListener;
 import com.j4velin.pedometer.PEDOMETER.util.API26Wrapper;
 import com.j4velin.pedometer.PEDOMETER.util.Logger;
 import com.j4velin.pedometer.PEDOMETER.util.Util;
+import com.j4velin.pedometer.R;
+import com.shashank.sony.fancytoastlib.FancyToast;
 import com.squareup.picasso.Picasso;
+
+import org.eazegraph.lib.charts.PieChart;
+import org.eazegraph.lib.models.PieModel;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Fragment_Overview extends Fragment implements SensorEventListener {
-    TextView unitid;
-
-    TextView text_active;
-    private TextView stepsView;
-    private PieModel sliceGoal, sliceCurrent;
-    private PieChart pg;
+    public final static NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
     public static String LOGGEDINname;
+    public static int toogle_run = 0;
+    public static SharedPreferences.Editor chronoeditor;
+    public static SharedPreferences prefchrono;
+    public static boolean runComplete = false;
+    public static int todayOffset, total_start, goal, since_boot, total_days;
+    public Chronometer mStopWatch;
+    TextView unitid;
+    TextView text_active;
     File imagepath;
     TextView username;
-    public static int toogle_run=0;
     File file = null;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     GoogleSignInClient mGoogleSignInClient;
     Button share;
     String Date;
-    public static SharedPreferences.Editor chronoeditor;
-    public static SharedPreferences prefchrono;
     Button button;
-    private TextView progresstext;
     int steps = 0;
     boolean isChronometerRunning = false;
     String currentDateTimeString;
-    public Chronometer mStopWatch;
     int perc;
     Dialog dialog;
-
-    public static boolean runComplete=false;
-
+    private TextView stepsView;
+    private PieModel sliceGoal, sliceCurrent;
+    private PieChart pg;
+    private TextView progresstext;
     private String hh = "00", mm = "00", ss = "00";
-    public static int todayOffset, total_start, goal, since_boot, total_days;
-    public final static NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
-    private boolean showSteps = true;
+    private final boolean showSteps = true;
     private Button stopbtn;
+
+    public static Bitmap getScreenShot(View view) {
+        View screenView = view.getRootView();
+        screenView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
+        screenView.setDrawingCacheEnabled(false);
+        return bitmap;
+
+    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -167,7 +148,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         mStopWatch = (Chronometer) v.findViewById(R.id.chronometer);
         mStopWatch.setBase(SystemClock.elapsedRealtime());
         mStopWatch.stop();
-
+        runComplete=false;
         currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         Date = currentDateTimeString.substring(4, 6);
         String[] Date1 = Date.split(",");
@@ -187,15 +168,21 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             editor.putBoolean("dayaftertomorrow", false).apply();
             editor.putLong("MinimumTime", 10000000).apply();
         }
-        if(Date.equals("3")) {
+        if (Date.equals("3")) {
             editor.putBoolean("today", true).apply();
-        }else{editor.putBoolean("today", false).apply();}
-        if(Date.equals("13")) {
+        } else {
+            editor.putBoolean("today", false).apply();
+        }
+        if (Date.equals("13")) {
             editor.putBoolean("tomorrow", true).apply();
-        }else{editor.putBoolean("tomorrow", false).apply();}
-        if(Date.equals("14")) {
+        } else {
+            editor.putBoolean("tomorrow", false).apply();
+        }
+        if (Date.equals("14")) {
             editor.putBoolean("dayaftertomorrow", true).apply();
-        }else{editor.putBoolean("dayaftertomorrow", false).apply();}
+        } else {
+            editor.putBoolean("dayaftertomorrow", false).apply();
+        }
 
 
         Log.d("vipin", currentDateTimeString + "/" + Date);
@@ -262,17 +249,17 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         stopbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddData("0","0");
-                runComplete=false;
+                AddData("0", "0");
+                runComplete = false;
                 button.setVisibility(View.VISIBLE);
                 text_active.setVisibility(View.VISIBLE);
                 stopbtn.setVisibility(View.INVISIBLE);
                 stepsView.setText("0");
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
-                isChronometerRunning  = false;
+                isChronometerRunning = false;
                 editor.putBoolean("today", false).apply();
-                chronoeditor.putBoolean("CHRONO",false).apply();
+                chronoeditor.putBoolean("CHRONO", false).apply();
                 button.setText("Start Run");
                 set_to_zero();
                 Handler handler = new Handler();
@@ -289,7 +276,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         ////checking values for shared prefrenece
         boolean today = run.getBoolean("today", true);
         boolean tomorrow = run.getBoolean("today", true);
-        Toast.makeText(getActivity(), "TODAY=" + today, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "TODAY=" + today, Toast.LENGTH_SHORT).show();
         boolean dayaftertomorrow = run.getBoolean("today", true);
         if (Date.equals("3") && today) {
             button.setEnabled(true);
@@ -319,17 +306,17 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             public void onClick(View v) {
                 stopbtn.setVisibility(View.VISIBLE);
                 button.setVisibility(View.INVISIBLE);
-                runComplete=true;
+                runComplete = true;
                 text_active.setVisibility(View.INVISIBLE);
                 final int status = (Integer) v.getTag();
 //                mStopWatch.setBase(SystemClock.elapsedRealtime());
 //                mStopWatch.stop();
-                isChronometerRunning  = false;
-                chronoeditor.putBoolean("CHRONO",false).apply();
+                isChronometerRunning = false;
+                chronoeditor.putBoolean("CHRONO", false).apply();
                 if (Date.equals("3")) {
                     if (today) {
-                        Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
-                        chronoeditor.putBoolean("CHRONO",true).apply();
+//                        Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
+                        chronoeditor.putBoolean("CHRONO", true).apply();
                         mStopWatch.setBase(SystemClock.elapsedRealtime());
                         mStopWatch.start();
 
@@ -339,7 +326,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                 long time = SystemClock.elapsedRealtime() - cArg.getBase();
                                 int h = (int) (time / 3600000);
 
-                                isChronometerRunning=true;
+                                isChronometerRunning = true;
                                 int m = (int) (time - h * 3600000) / 60000;
                                 int s = (int) (time - h * 3600000 - m * 60000) / 1000;
                                 hh = h < 10 ? "0" + h : h + "";
@@ -351,15 +338,15 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     stopbtn.setClickable(false);
                                 }
                                 if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
-
-                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
+                                    FancyToast.makeText(getActivity(),"You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
+//                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                                     makedialog();
                                     button.setClickable(false);
                                     button.setEnabled(false);
                                     stopbtn.setClickable(false);
                                     stopbtn.setEnabled(false);
                                     mStopWatch.stop();
-                                    isChronometerRunning  = false;
+                                    isChronometerRunning = false;
                                     long MinimumTime = run.getLong("MinimumTime", 1000000);
                                     MinimumTime = Math.min(MinimumTime, time);
                                     h = (int) (MinimumTime / 3600000);
@@ -369,7 +356,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     mm = m < 10 ? "0" + m : m + "";
                                     ss = s < 10 ? "0" + s : s + "";
                                     if (m < 13 && h == 0) {
-                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                                        FancyToast.makeText(getActivity(),"Security Reason TRY NEXT TIME!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
                                     } else {
                                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
                                         Database db = Database.getInstance(getActivity());
@@ -413,7 +401,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                         });
 
 
-                        isChronometerRunning  = true;
+                        isChronometerRunning = true;
                         v.setTag(0);
 //                        start_again();
                     }
@@ -421,8 +409,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                     if (tomorrow) {
                         mStopWatch.setBase(SystemClock.elapsedRealtime());
                         mStopWatch.start();
-                        chronoeditor.putBoolean("CHRONO",true).apply();
-                        isChronometerRunning  = true;
+                        chronoeditor.putBoolean("CHRONO", true).apply();
+                        isChronometerRunning = true;
 
                         mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                             @Override
@@ -430,7 +418,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                 long time = SystemClock.elapsedRealtime() - cArg.getBase();
                                 int h = (int) (time / 3600000);
 
-                                isChronometerRunning=true;
+                                isChronometerRunning = true;
                                 int m = (int) (time - h * 3600000) / 60000;
                                 int s = (int) (time - h * 3600000 - m * 60000) / 1000;
                                 hh = h < 10 ? "0" + h : h + "";
@@ -442,15 +430,15 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     stopbtn.setClickable(false);
                                 }
                                 if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
-
-                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
+                                    FancyToast.makeText(getActivity(),"You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
+//                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                                     makedialog();
                                     button.setClickable(false);
                                     button.setEnabled(false);
                                     stopbtn.setClickable(false);
                                     stopbtn.setEnabled(false);
                                     mStopWatch.stop();
-                                    isChronometerRunning  = false;
+                                    isChronometerRunning = false;
                                     long MinimumTime = run.getLong("MinimumTime", 1000000);
                                     MinimumTime = Math.min(MinimumTime, time);
                                     h = (int) (MinimumTime / 3600000);
@@ -460,8 +448,10 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     mm = m < 10 ? "0" + m : m + "";
                                     ss = s < 10 ? "0" + s : s + "";
                                     if (m < 13 && h == 0) {
-                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                                        FancyToast.makeText(getActivity(),"Security Reason TRY NEXT TIME!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
                                     } else {
+                                        editor.putLong("MinimumTime", MinimumTime);
                                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
                                     }
                                     if (Date.equals("3")) {
@@ -505,14 +495,14 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                     if (dayaftertomorrow) {
                         mStopWatch.setBase(SystemClock.elapsedRealtime());
                         mStopWatch.start();
-                        chronoeditor.putBoolean("CHRONO",true).apply();
+                        chronoeditor.putBoolean("CHRONO", true).apply();
                         mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
                             @Override
                             public void onChronometerTick(Chronometer cArg) {
                                 long time = SystemClock.elapsedRealtime() - cArg.getBase();
                                 int h = (int) (time / 3600000);
 
-                                isChronometerRunning=true;
+                                isChronometerRunning = true;
                                 int m = (int) (time - h * 3600000) / 60000;
                                 int s = (int) (time - h * 3600000 - m * 60000) / 1000;
                                 hh = h < 10 ? "0" + h : h + "";
@@ -524,15 +514,15 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     stopbtn.setClickable(false);
                                 }
                                 if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
-
-                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
+                                    FancyToast.makeText(getActivity(),"You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
+//                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                                     makedialog();
                                     button.setClickable(false);
                                     button.setEnabled(false);
                                     stopbtn.setClickable(false);
                                     stopbtn.setEnabled(false);
                                     mStopWatch.stop();
-                                    isChronometerRunning  = false;
+                                    isChronometerRunning = false;
                                     long MinimumTime = run.getLong("MinimumTime", 1000000);
                                     MinimumTime = Math.min(MinimumTime, time);
                                     h = (int) (MinimumTime / 3600000);
@@ -542,7 +532,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     mm = m < 10 ? "0" + m : m + "";
                                     ss = s < 10 ? "0" + s : s + "";
                                     if (m < 13 && h == 0) {
-                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                                        FancyToast.makeText(getActivity(),"Security Reason TRY NEXT TIME!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
+//                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
                                     }
@@ -580,15 +571,15 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
                         });
 
-                        isChronometerRunning  = true;
+                        isChronometerRunning = true;
                         v.setTag(0);
                         start_again();
                     }
-                }else{
-                    isChronometerRunning  = false;
+                } else {
+                    isChronometerRunning = false;
                     mStopWatch.setBase(SystemClock.elapsedRealtime());
                     mStopWatch.stop();
-                    chronoeditor.putBoolean("CHRONO",false).apply();
+                    chronoeditor.putBoolean("CHRONO", false).apply();
                     v.setTag(1);
                 }
             }
@@ -665,7 +656,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
             db.close();
         } catch (Exception ex) {
-            Toast.makeText(getActivity(), "FAILED!!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "FAILED!!", Toast.LENGTH_SHORT).show();
+            FancyToast.makeText(getActivity(),"FAILED !!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
         }
 
 //        API26Wrapper.startForeground(NOTIFICATION_ID, SensorListener.getNotification_to_Zero(getActivity()));
@@ -722,7 +714,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
 
         //
 //        mStopWatch.setBase(SystemClock.elapsedRealtime());
@@ -730,9 +722,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 //
 
         boolean running = prefchrono.getBoolean("CHRONO", false);
-        if(running) {
-            String w[]=getLastDB().split(",");
-            Toast.makeText(getActivity(),"RUNNING "+w[0]+":"+w[1],Toast.LENGTH_SHORT).show();
+        if (running) {
+            String[] w = getLastDB().split(",");
+//            Toast.makeText(getActivity(),"RUNNING "+w[0]+":"+w[1],Toast.LENGTH_SHORT).show();
 //            try{stepsView.setText(since_boot);}catch(Exception e){stepsView.setText(w[0]);}
 //            since_boot=Integer.parseInt(w[0]);
             stopbtn.setBackgroundResource(R.drawable.round_button_grey);
@@ -740,13 +732,13 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             button.setVisibility(View.GONE);
             text_active.setVisibility(View.INVISIBLE);
 
-        }else{
-            Toast.makeText(getActivity(),"NOT RUNNING",Toast.LENGTH_SHORT).show();
+        } else {
+//            Toast.makeText(getActivity(),"NOT RUNNING",Toast.LENGTH_SHORT).show();
             stopbtn.setBackgroundResource(R.drawable.round_button);
             stopbtn.setVisibility(View.GONE);
             button.setVisibility(View.VISIBLE);
             text_active.setVisibility(View.VISIBLE);
-            if(!stepsView.getText().toString().equals("0")){
+            if (!stepsView.getText().toString().equals("0")) {
                 stopbtn.performClick();
                 mStopWatch.stop();
             }
@@ -812,14 +804,16 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         updatePie();
 
     }
-    public void AddData(String steps,String time){
+
+    public void AddData(String steps, String time) {
 //        if(myDB.insertData(steps,time)){
 //            Toast.makeText(getActivity(),"DONE!!",Toast.LENGTH_SHORT).show();
 //        }else{
 //            Toast.makeText(getActivity(),"ERR DB!!",Toast.LENGTH_SHORT).show();
 //        }
     }
-    public String getLastDB(){
+
+    public String getLastDB() {
 //        Cursor res=myDB.getLastData();
 //        if(res.getCount()==0){
 //            Toast.makeText(getActivity(),"FRESH RUN",Toast.LENGTH_SHORT).show();
@@ -837,13 +831,14 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        AddData("0","0");
+        AddData("0", "0");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
+
         try {
             SensorManager sm = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
             sm.unregisterListener(this);
@@ -851,14 +846,14 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             if (BuildConfig.DEBUG) Logger.log(e);
         }
 
-        if(isChronometerRunning){
+        if (isChronometerRunning) {
             long elapsedMillis = SystemClock.elapsedRealtime() - mStopWatch.getBase();
-            AddData(stepsView.getText().toString(),String.valueOf(elapsedMillis));
-            Toast.makeText(getActivity(),"SENT on DB PAUSE",Toast.LENGTH_SHORT).show();
-            chronoeditor.putBoolean("CHRONO",true).apply();
-        }else{
-            chronoeditor.putBoolean("CHRONO",false).apply();
-            if(!stepsView.getText().toString().equals("0")){
+            AddData(stepsView.getText().toString(), String.valueOf(elapsedMillis));
+//            Toast.makeText(getActivity(),"SENT on DB PAUSE",Toast.LENGTH_SHORT).show();
+            chronoeditor.putBoolean("CHRONO", true).apply();
+        } else {
+            chronoeditor.putBoolean("CHRONO", false).apply();
+            if (!stepsView.getText().toString().equals("0")) {
                 stopbtn.performClick();
                 mStopWatch.stop();
             }
@@ -898,7 +893,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
     private void updatePie() {
-        if(!isChronometerRunning){return;}
+        if (!isChronometerRunning) {
+            return;
+        }
         if (BuildConfig.DEBUG) Logger.log("UI - update steps: " + since_boot);
         // todayOffset might still be Integer.MIN_VALUE on first start
         int steps_today = Math.max(todayOffset + since_boot, 0);
@@ -919,7 +916,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         pg.update();
         if (showSteps) {
             stepsView.setText(formatter.format(steps_today));
-            Toast.makeText(getActivity(),"STEPS TODAY="+steps_today,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(),"STEPS TODAY="+steps_today,Toast.LENGTH_SHORT).show();
 
         } else {
             // update only every 10 steps when displaying distance
@@ -940,16 +937,6 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         }
     }
 
-
-    public static Bitmap getScreenShot(View view) {
-        View screenView = view.getRootView();
-        screenView.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
-        screenView.setDrawingCacheEnabled(false);
-        return bitmap;
-
-    }
-
     public void store(Bitmap bm, String fileName) {
         final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
         File dir = new File(dirPath);
@@ -963,8 +950,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             fOut.close();
         } catch (Exception e) {
             e.printStackTrace();
-
-            Toast toast = Toast.makeText(getActivity(), "FAILED", Toast.LENGTH_SHORT);
+            FancyToast.makeText(getActivity(),"FAILED!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
+//            Toast toast = Toast.makeText(getActivity(), "FAILED", Toast.LENGTH_SHORT);
         }
     }
 
@@ -980,7 +967,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         try {
             startActivity(Intent.createChooser(intent, "Share Screenshot"));
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(getActivity(), "No App Available", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "No App Available", Toast.LENGTH_SHORT).show();
+            FancyToast.makeText(getActivity(),"No App Available!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
         }
     }
 

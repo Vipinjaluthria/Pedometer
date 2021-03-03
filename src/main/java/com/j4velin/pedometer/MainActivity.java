@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(Fragment_Overview.runComplete)
         {
 //            enableBottomBar(true);
-            Toast.makeText(getApplicationContext(),"TRUE",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(),"TRUE",Toast.LENGTH_SHORT).show();
         }
         else{
 //            enableBottomBar(false);
-            Toast.makeText(getApplicationContext(),"FALSE",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(),"FALSE",Toast.LENGTH_SHORT).show();
             switch (item.getItemId()) {
                 case R.id.nav_home:
                     fragment = new Fragment_Overview();
@@ -122,8 +122,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode== KeyEvent.KEYCODE_BACK)
-            Toast.makeText(getApplicationContext(), "back press", Toast.LENGTH_LONG).show();
+        if(keyCode== KeyEvent.KEYCODE_BACK){}
+//            Toast.makeText(getApplicationContext(), "back press", Toast.LENGTH_LONG).show();
         return false;
         // Disable back button..............
     }
