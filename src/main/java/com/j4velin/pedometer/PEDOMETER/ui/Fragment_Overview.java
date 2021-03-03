@@ -366,6 +366,11 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                         Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
+                                        Database db = Database.getInstance(getActivity());
+                                        db.deleteAll();
+                                        db.addToLastEntry(0);
+                                        db.saveCurrentSteps(0);
+                                        db.close();
                                     }
                                     if (Date.equals("3")) {
                                         editor.putBoolean("today", true).apply();
@@ -652,9 +657,6 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             Database db = Database.getInstance(getActivity());
             SensorListener.getNotification_to_Zero(getActivity());
 
-            db.deleteAll();
-            db.addToLastEntry(0);
-            db.saveCurrentSteps(0);
             db.close();
         } catch (Exception ex) {
             Toast.makeText(getActivity(), "FAILED!!", Toast.LENGTH_SHORT).show();
@@ -780,9 +782,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
         total_start = db.getTotalWithoutToday();
         total_days = db.getDays();
-        db.deleteAll();
-        db.addToLastEntry(0);
-        db.saveCurrentSteps(0);
+
         db.close();
 
 
