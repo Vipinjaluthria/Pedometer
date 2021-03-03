@@ -717,10 +717,12 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     public void onResume() {
         super.onResume();
         Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
-//
+
+        //
 //        mStopWatch.setBase(SystemClock.elapsedRealtime());
 //        mStopWatch.stop();
 //
+
         boolean running = prefchrono.getBoolean("CHRONO", false);
         if(running) {
             String w[]=getLastDB().split(",");
@@ -730,8 +732,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             stopbtn.setBackgroundResource(R.drawable.round_button_grey);
             stopbtn.setVisibility(View.VISIBLE);
             button.setVisibility(View.GONE);
-            text_active.setVisibility(View.GONE);
-
+            text_active.setVisibility(View.INVISIBLE);
 
         }else{
             Toast.makeText(getActivity(),"NOT RUNNING",Toast.LENGTH_SHORT).show();
