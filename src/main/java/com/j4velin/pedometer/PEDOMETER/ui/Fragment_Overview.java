@@ -124,6 +124,9 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     public Chronometer mStopWatch;
     int perc;
     Dialog dialog;
+
+    public static boolean runComplete=false;
+
     private String hh = "00", mm = "00", ss = "00";
     public static int todayOffset, total_start, goal, since_boot, total_days;
     public final static NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
@@ -745,6 +748,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                 mStopWatch.stop();
             }
         }
+
         Database db = Database.getInstance(getActivity());
 
         if (BuildConfig.DEBUG) db.logState();
@@ -785,7 +789,6 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         total_days = db.getDays();
 
         db.close();
-
 
         stepsDistanceChanged();
     }

@@ -26,6 +26,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
@@ -92,10 +93,14 @@ public class Google_Sign_In extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         TextView textView = (TextView) signInButton.getChildAt(0);
         textView.setText("Sign in with Google");
+        textView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        textView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        textView.requestLayout();
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
 
         signInButton.setOnClickListener(new View.OnClickListener() {

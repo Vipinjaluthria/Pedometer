@@ -9,7 +9,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:gravity="center"
         android:id="@+id/card">
 
         <TextView
@@ -42,11 +41,10 @@
 
         <TextView
             android:id="@+id/textview"
-            android:layout_width="279dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="45dp"
-            android:layout_marginEnd="85dp"
             android:fontFamily="@font/sf"
             android:layout_marginBottom="0dp"
             android:layout_toEndOf="@+id/idview"
@@ -60,7 +58,7 @@
 
         <TextView
             android:id="@+id/timeview"
-            android:layout_width="94dp"
+            android:layout_width="wrap_content"
             android:fontFamily="@font/sf"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
