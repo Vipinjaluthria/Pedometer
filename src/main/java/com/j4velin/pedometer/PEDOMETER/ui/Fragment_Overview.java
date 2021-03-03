@@ -31,6 +31,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.util.Pair;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -262,6 +263,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 AddData("0","0");
+                runComplete=false;
                 button.setVisibility(View.VISIBLE);
                 text_active.setVisibility(View.VISIBLE);
                 stopbtn.setVisibility(View.INVISIBLE);
@@ -317,6 +319,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             public void onClick(View v) {
                 stopbtn.setVisibility(View.VISIBLE);
                 button.setVisibility(View.INVISIBLE);
+                runComplete=true;
                 text_active.setVisibility(View.INVISIBLE);
                 final int status = (Integer) v.getTag();
 //                mStopWatch.setBase(SystemClock.elapsedRealtime());
@@ -1094,7 +1097,6 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
     private class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
@@ -1107,4 +1109,5 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
             return false;
         }
     }
+
 }

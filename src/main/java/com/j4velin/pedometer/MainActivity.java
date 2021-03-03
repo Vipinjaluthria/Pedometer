@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -36,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FragmentPagerItemAdapter adapter;
     FirebaseDatabase firebaseDatabase;
     FirebaseAuth firebaseAuth;
-
+    BottomNavigationView navigation;
+    Fragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
         startService(new Intent(this, SensorListener.class));
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
         makedialog2();;
@@ -79,17 +81,26 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = new Fragment_Overview();
-
-        switch (item.getItemId()) {
-//            case R.id.nav_home:
-//                fragment = new Fragment_Overview();
-//                break;
-
-            case R.id.nav_leaderboard:
-                fragment = new LeaderboardView();
-                break;
+        fragment = null;
+        if(Fragment_Overview.runComplete)
+        {
+//            enableBottomBar(true);
+            Toast.makeText(getApplicationContext(),"TRUE",Toast.LENGTH_SHORT).show();
         }
+        else{
+//            enableBottomBar(false);
+            Toast.makeText(getApplicationContext(),"FALSE",Toast.LENGTH_SHORT).show();
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    fragment = new Fragment_Overview();
+                    break;
+
+                case R.id.nav_leaderboard:
+                    fragment = new LeaderboardView();
+                    break;
+            }
+        }
+
 
         return loadFragment(fragment);
     }
@@ -109,4 +120,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return false;
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode== KeyEvent.KEYCODE_BACK)
+            Toast.makeText(getApplicationContext(), "back press", Toast.LENGTH_LONG).show();
+        return false;
+        // Disable back button..............
+    }
+    private void enableBottomBar(boolean enable){
+        for (int i = 0; i < navigation.getMenu().size(); i++) {
+            navigation.getMenu().getItem(i).setEnabled(enable);
+        }
+    }
 }
