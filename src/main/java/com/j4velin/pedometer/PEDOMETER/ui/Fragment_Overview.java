@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,6 +20,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,10 +79,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.j4velin.pedometer.AboutActivity;
 import com.j4velin.pedometer.BuildConfig;
+
 import com.j4velin.pedometer.MainActivity;
 import com.j4velin.pedometer.PEDOMETER.Database;
 import com.j4velin.pedometer.PEDOMETER.Google_Sign_In;
@@ -93,9 +97,9 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class
-Fragment_Overview extends Fragment implements SensorEventListener {
+public class Fragment_Overview extends Fragment implements SensorEventListener {
     TextView unitid;
+
     TextView text_active;
     private TextView stepsView;
     private PieModel sliceGoal, sliceCurrent;
@@ -103,15 +107,19 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     public static String LOGGEDINname;
     File imagepath;
     TextView username;
+    public static int toogle_run=0;
     File file = null;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     GoogleSignInClient mGoogleSignInClient;
     Button share;
     String Date;
+    public static SharedPreferences.Editor chronoeditor;
+    public static SharedPreferences prefchrono;
     Button button;
     private TextView progresstext;
     int steps = 0;
+    boolean isChronometerRunning = false;
     String currentDateTimeString;
     public Chronometer mStopWatch;
     int perc;
@@ -153,9 +161,19 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         text_active = v.findViewById(R.id.text_active);
         LOGGEDINname = firebaseAuth.getCurrentUser().getDisplayName();
         mStopWatch = (Chronometer) v.findViewById(R.id.chronometer);
+        mStopWatch.setBase(SystemClock.elapsedRealtime());
+        mStopWatch.stop();
+
+        currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
+        Date = currentDateTimeString.substring(4, 6);
+        String[] Date1 = Date.split(",");
+        Date = Date1[0];
 
         SharedPreferences run = getActivity().getSharedPreferences("Database", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = run.edit();
+        prefchrono = getActivity().getSharedPreferences("CHRONODB", Context.MODE_PRIVATE);
+        chronoeditor = prefchrono.edit();
+
         if (run.getBoolean("firstrun", true)) {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
@@ -165,10 +183,16 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             editor.putBoolean("dayaftertomorrow", false).apply();
             editor.putLong("MinimumTime", 10000000).apply();
         }
-        currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        Date = currentDateTimeString.substring(4, 6);
-        String[] Date1 = Date.split(",");
-        Date = Date1[0];
+        if(Date.equals("3")) {
+            editor.putBoolean("today", true).apply();
+        }else{editor.putBoolean("today", false).apply();}
+        if(Date.equals("13")) {
+            editor.putBoolean("tomorrow", true).apply();
+        }else{editor.putBoolean("tomorrow", false).apply();}
+        if(Date.equals("14")) {
+            editor.putBoolean("dayaftertomorrow", true).apply();
+        }else{editor.putBoolean("dayaftertomorrow", false).apply();}
+
 
         Log.d("vipin", currentDateTimeString + "/" + Date);
 //        Toast.makeText(getActivity(), "TODAY's Date = " + currentDateTimeString, Toast.LENGTH_LONG).show();
@@ -226,96 +250,33 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         });
 
         mStopWatch.setBase(SystemClock.elapsedRealtime());
-        mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer cArg) {
-                long time = SystemClock.elapsedRealtime() - cArg.getBase();
-                int h = (int) (time / 3600000);
-                int m = (int) (time - h * 3600000) / 60000;
-                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
-                hh = h < 10 ? "0" + h : h + "";
-                mm = m < 10 ? "0" + m : m + "";
-                ss = s < 10 ? "0" + s : s + "";
-                if (s > 20) {
-                    stopbtn.setEnabled(false);
-                    stopbtn.setBackgroundResource(R.drawable.round_button_grey);
-                    stopbtn.setClickable(false);
-                }
-                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
 
-                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
-                    makedialog();
-                    button.setClickable(false);
-                    button.setEnabled(false);
-                    stopbtn.setClickable(false);
-                    stopbtn.setEnabled(false);
-                    mStopWatch.stop();
-                    long MinimumTime = run.getLong("MinimumTime", 1000000);
-                    MinimumTime = Math.min(MinimumTime, time);
-                    h = (int) (MinimumTime / 3600000);
-                    m = (int) (MinimumTime - h * 3600000) / 60000;
-                    s = (int) (MinimumTime - h * 3600000 - m * 60000) / 1000;
-                    hh = h < 10 ? "0" + h : h + "";
-                    mm = m < 10 ? "0" + m : m + "";
-                    ss = s < 10 ? "0" + s : s + "";
-                    if (m < 13 && h == 0) {
-                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
-                    }
-                    if (Date.equals("2")) {
-                        editor.putBoolean("today", true).apply();
-
-                        editor.putLong("MinimumTime", MinimumTime);
-                    } else if (Date.equals("13")) {
-
-                        editor.putBoolean("tomorrow", true).apply();
-                        editor.putLong("MinimumTime", MinimumTime);
-                    } else if (Date.equals("14")) {
-                        editor.putLong("MinimumTime", MinimumTime);
-                        editor.putBoolean("dayaftertomorrow", true).apply();
-                    }
-                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                    }
-//                Bitmap bitmap=takescreen();
-//                saveBitmap(bitmap);
-//                shareit();
-//                    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-//                    Bitmap bmp=getScreenShot(rootView);
-//                    store(bmp,"file.png");
-//                    shareImage(file);
-                    //UPLOAD TO DATABASE TIME
-                    //String time=hh+":"+mm+":"+ss;
-                    cArg.setText(hh + ":" + mm + ":" + ss);
-                    set_to_zero();
-                    button.setText("Start Run");
-
-                }
-            }
-
-
-        });
-
-        mStopWatch.setBase(SystemClock.elapsedRealtime());
+//        mStopWatch.setBase(SystemClock.elapsedRealtime());
 //         button  =  v.findViewById(R.id.startstop);
         button.setTag(1);
-        button.setText("START");
+        button.setText("Start Run");
         stopbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AddData("0","0");
                 button.setVisibility(View.VISIBLE);
                 text_active.setVisibility(View.VISIBLE);
                 stopbtn.setVisibility(View.INVISIBLE);
+                stepsView.setText("0");
                 mStopWatch.setBase(SystemClock.elapsedRealtime());
                 mStopWatch.stop();
-                button.setText("START");
+                isChronometerRunning  = false;
+                editor.putBoolean("today", false).apply();
+                chronoeditor.putBoolean("CHRONO",false).apply();
+                button.setText("Start Run");
                 set_to_zero();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         set_to_zero();
+//                        button.performClick();
+//                        stopbtn.performClick();
                     }
                 }, 20);
             }
@@ -325,7 +286,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         boolean tomorrow = run.getBoolean("today", true);
         Toast.makeText(getActivity(), "TODAY=" + today, Toast.LENGTH_SHORT).show();
         boolean dayaftertomorrow = run.getBoolean("today", true);
-        if (Date.equals("2") && today) {
+        if (Date.equals("3") && today) {
             button.setEnabled(true);
             button.setClickable(true);
 
@@ -347,8 +308,6 @@ Fragment_Overview extends Fragment implements SensorEventListener {
             stopbtn.setClickable(false);
             stopbtn.setEnabled(false);
         }
-
-
         int stopbtn_visible = 0;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -357,31 +316,269 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                 button.setVisibility(View.INVISIBLE);
                 text_active.setVisibility(View.INVISIBLE);
                 final int status = (Integer) v.getTag();
-                mStopWatch.setBase(SystemClock.elapsedRealtime());
-                mStopWatch.stop();
-
-                if (Date.equals("2")) {
+//                mStopWatch.setBase(SystemClock.elapsedRealtime());
+//                mStopWatch.stop();
+                isChronometerRunning  = false;
+                chronoeditor.putBoolean("CHRONO",false).apply();
+                if (Date.equals("3")) {
                     if (today) {
                         Toast.makeText(getActivity(), "I am here", Toast.LENGTH_SHORT).show();
+                        chronoeditor.putBoolean("CHRONO",true).apply();
+                        mStopWatch.setBase(SystemClock.elapsedRealtime());
                         mStopWatch.start();
 
+                        mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                            @Override
+                            public void onChronometerTick(Chronometer cArg) {
+                                long time = SystemClock.elapsedRealtime() - cArg.getBase();
+                                int h = (int) (time / 3600000);
+
+                                isChronometerRunning=true;
+                                int m = (int) (time - h * 3600000) / 60000;
+                                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+                                hh = h < 10 ? "0" + h : h + "";
+                                mm = m < 10 ? "0" + m : m + "";
+                                ss = s < 10 ? "0" + s : s + "";
+                                if (s > 20) {
+                                    stopbtn.setEnabled(false);
+                                    stopbtn.setBackgroundResource(R.drawable.round_button_grey);
+                                    stopbtn.setClickable(false);
+                                }
+                                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
+
+                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
+                                    makedialog();
+                                    button.setClickable(false);
+                                    button.setEnabled(false);
+                                    stopbtn.setClickable(false);
+                                    stopbtn.setEnabled(false);
+                                    mStopWatch.stop();
+                                    isChronometerRunning  = false;
+                                    long MinimumTime = run.getLong("MinimumTime", 1000000);
+                                    MinimumTime = Math.min(MinimumTime, time);
+                                    h = (int) (MinimumTime / 3600000);
+                                    m = (int) (MinimumTime - h * 3600000) / 60000;
+                                    s = (int) (MinimumTime - h * 3600000 - m * 60000) / 1000;
+                                    hh = h < 10 ? "0" + h : h + "";
+                                    mm = m < 10 ? "0" + m : m + "";
+                                    ss = s < 10 ? "0" + s : s + "";
+                                    if (m < 13 && h == 0) {
+                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
+                                    }
+                                    if (Date.equals("3")) {
+                                        editor.putBoolean("today", true).apply();
+
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                    } else if (Date.equals("13")) {
+
+                                        editor.putBoolean("tomorrow", true).apply();
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                    } else if (Date.equals("14")) {
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                        editor.putBoolean("dayaftertomorrow", true).apply();
+                                    }
+                                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                    }
+//                Bitmap bitmap=takescreen();
+//                saveBitmap(bitmap);
+//                shareit();
+//                    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+//                    Bitmap bmp=getScreenShot(rootView);
+//                    store(bmp,"file.png");
+//                    shareImage(file);
+                                    //UPLOAD TO DATABASE TIME
+                                    //String time=hh+":"+mm+":"+ss;
+                                    cArg.setText(hh + ":" + mm + ":" + ss);
+                                    set_to_zero();
+                                    button.setText("Start Run");
+
+                                }
+                            }
+
+
+                        });
+
+
+                        isChronometerRunning  = true;
                         v.setTag(0);
 //                        start_again();
                     }
                 } else if (Date.equals("13")) {
                     if (tomorrow) {
+                        mStopWatch.setBase(SystemClock.elapsedRealtime());
                         mStopWatch.start();
+                        chronoeditor.putBoolean("CHRONO",true).apply();
+                        isChronometerRunning  = true;
+
+                        mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                            @Override
+                            public void onChronometerTick(Chronometer cArg) {
+                                long time = SystemClock.elapsedRealtime() - cArg.getBase();
+                                int h = (int) (time / 3600000);
+
+                                isChronometerRunning=true;
+                                int m = (int) (time - h * 3600000) / 60000;
+                                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+                                hh = h < 10 ? "0" + h : h + "";
+                                mm = m < 10 ? "0" + m : m + "";
+                                ss = s < 10 ? "0" + s : s + "";
+                                if (s > 20) {
+                                    stopbtn.setEnabled(false);
+                                    stopbtn.setBackgroundResource(R.drawable.round_button_grey);
+                                    stopbtn.setClickable(false);
+                                }
+                                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
+
+                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
+                                    makedialog();
+                                    button.setClickable(false);
+                                    button.setEnabled(false);
+                                    stopbtn.setClickable(false);
+                                    stopbtn.setEnabled(false);
+                                    mStopWatch.stop();
+                                    isChronometerRunning  = false;
+                                    long MinimumTime = run.getLong("MinimumTime", 1000000);
+                                    MinimumTime = Math.min(MinimumTime, time);
+                                    h = (int) (MinimumTime / 3600000);
+                                    m = (int) (MinimumTime - h * 3600000) / 60000;
+                                    s = (int) (MinimumTime - h * 3600000 - m * 60000) / 1000;
+                                    hh = h < 10 ? "0" + h : h + "";
+                                    mm = m < 10 ? "0" + m : m + "";
+                                    ss = s < 10 ? "0" + s : s + "";
+                                    if (m < 13 && h == 0) {
+                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
+                                    }
+                                    if (Date.equals("3")) {
+                                        editor.putBoolean("today", true).apply();
+
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                    } else if (Date.equals("13")) {
+
+                                        editor.putBoolean("tomorrow", true).apply();
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                    } else if (Date.equals("14")) {
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                        editor.putBoolean("dayaftertomorrow", true).apply();
+                                    }
+                                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                    }
+//                Bitmap bitmap=takescreen();
+//                saveBitmap(bitmap);
+//                shareit();
+//                    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+//                    Bitmap bmp=getScreenShot(rootView);
+//                    store(bmp,"file.png");
+//                    shareImage(file);
+                                    //UPLOAD TO DATABASE TIME
+                                    //String time=hh+":"+mm+":"+ss;
+                                    cArg.setText(hh + ":" + mm + ":" + ss);
+                                    set_to_zero();
+                                    button.setText("Start Run");
+
+                                }
+                            }
+
+
+                        });
 
                         v.setTag(0);
                         start_again();
                     }
                 } else if (Date.equals("14")) {
                     if (dayaftertomorrow) {
+                        mStopWatch.setBase(SystemClock.elapsedRealtime());
                         mStopWatch.start();
+                        chronoeditor.putBoolean("CHRONO",true).apply();
+                        mStopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                            @Override
+                            public void onChronometerTick(Chronometer cArg) {
+                                long time = SystemClock.elapsedRealtime() - cArg.getBase();
+                                int h = (int) (time / 3600000);
 
+                                isChronometerRunning=true;
+                                int m = (int) (time - h * 3600000) / 60000;
+                                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+                                hh = h < 10 ? "0" + h : h + "";
+                                mm = m < 10 ? "0" + m : m + "";
+                                ss = s < 10 ? "0" + s : s + "";
+                                if (s > 20) {
+                                    stopbtn.setEnabled(false);
+                                    stopbtn.setBackgroundResource(R.drawable.round_button_grey);
+                                    stopbtn.setClickable(false);
+                                }
+                                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
+
+                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
+                                    makedialog();
+                                    button.setClickable(false);
+                                    button.setEnabled(false);
+                                    stopbtn.setClickable(false);
+                                    stopbtn.setEnabled(false);
+                                    mStopWatch.stop();
+                                    isChronometerRunning  = false;
+                                    long MinimumTime = run.getLong("MinimumTime", 1000000);
+                                    MinimumTime = Math.min(MinimumTime, time);
+                                    h = (int) (MinimumTime / 3600000);
+                                    m = (int) (MinimumTime - h * 3600000) / 60000;
+                                    s = (int) (MinimumTime - h * 3600000 - m * 60000) / 1000;
+                                    hh = h < 10 ? "0" + h : h + "";
+                                    mm = m < 10 ? "0" + m : m + "";
+                                    ss = s < 10 ? "0" + s : s + "";
+                                    if (m < 13 && h == 0) {
+                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
+                                    }
+                                    if (Date.equals("3")) {
+                                        editor.putBoolean("today", true).apply();
+
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                    } else if (Date.equals("13")) {
+
+                                        editor.putBoolean("tomorrow", true).apply();
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                    } else if (Date.equals("14")) {
+                                        editor.putLong("MinimumTime", MinimumTime);
+                                        editor.putBoolean("dayaftertomorrow", true).apply();
+                                    }
+                                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                    }
+//                Bitmap bitmap=takescreen();
+//                saveBitmap(bitmap);
+//                shareit();
+//                    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+//                    Bitmap bmp=getScreenShot(rootView);
+//                    store(bmp,"file.png");
+//                    shareImage(file);
+                                    //UPLOAD TO DATABASE TIME
+                                    //String time=hh+":"+mm+":"+ss;
+                                    cArg.setText(hh + ":" + mm + ":" + ss);
+                                    set_to_zero();
+                                    button.setText("Start Run");
+
+                                }
+                            }
+
+
+                        });
+
+                        isChronometerRunning  = true;
                         v.setTag(0);
                         start_again();
                     }
+                }else{
+                    isChronometerRunning  = false;
+                    mStopWatch.setBase(SystemClock.elapsedRealtime());
+                    mStopWatch.stop();
+                    chronoeditor.putBoolean("CHRONO",false).apply();
+                    v.setTag(1);
                 }
             }
         });
@@ -443,10 +640,8 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
     public void set_to_zero() {
-//        totalView.setText(String.valueOf(0));
 
-        stepsView.setText(String.valueOf(0));
-//        averageView.setText(String.valueOf(0));
+//        stepsView.setText(String.valueOf(0));
 
 
         SharedPreferences prefs =
@@ -519,14 +714,34 @@ Fragment_Overview extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
-//        stopbtn.setBackgroundResource(R.drawable.round_button);
-//        stopbtn.setVisibility(View.GONE);
-//        button.setVisibility(View.VISIBLE);
-//        text_active.setVisibility(View.VISIBLE);
+        Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
 //
 //        mStopWatch.setBase(SystemClock.elapsedRealtime());
 //        mStopWatch.stop();
 //
+        boolean running = prefchrono.getBoolean("CHRONO", false);
+        if(running) {
+            String w[]=getLastDB().split(",");
+            Toast.makeText(getActivity(),"RUNNING "+w[0]+":"+w[1],Toast.LENGTH_SHORT).show();
+//            try{stepsView.setText(since_boot);}catch(Exception e){stepsView.setText(w[0]);}
+//            since_boot=Integer.parseInt(w[0]);
+            stopbtn.setBackgroundResource(R.drawable.round_button_grey);
+            stopbtn.setVisibility(View.VISIBLE);
+            button.setVisibility(View.GONE);
+            text_active.setVisibility(View.GONE);
+
+
+        }else{
+            Toast.makeText(getActivity(),"NOT RUNNING",Toast.LENGTH_SHORT).show();
+            stopbtn.setBackgroundResource(R.drawable.round_button);
+            stopbtn.setVisibility(View.GONE);
+            button.setVisibility(View.VISIBLE);
+            text_active.setVisibility(View.VISIBLE);
+            if(!stepsView.getText().toString().equals("0")){
+                stopbtn.performClick();
+                mStopWatch.stop();
+            }
+        }
         Database db = Database.getInstance(getActivity());
 
         if (BuildConfig.DEBUG) db.logState();
@@ -590,22 +805,63 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         updatePie();
 
     }
+    public void AddData(String steps,String time){
+//        if(myDB.insertData(steps,time)){
+//            Toast.makeText(getActivity(),"DONE!!",Toast.LENGTH_SHORT).show();
+//        }else{
+//            Toast.makeText(getActivity(),"ERR DB!!",Toast.LENGTH_SHORT).show();
+//        }
+    }
+    public String getLastDB(){
+//        Cursor res=myDB.getLastData();
+//        if(res.getCount()==0){
+//            Toast.makeText(getActivity(),"FRESH RUN",Toast.LENGTH_SHORT).show();
+//            return "0,0";
+//        }
+//        res.moveToPosition(res.getCount() - 1);
+//
+//        String step_from_db=res.getString(1);
+//        String time_from_db=res.getString(2);
+//        Toast.makeText(getActivity(),step_from_db+" "+time_from_db,Toast.LENGTH_SHORT).show();
+//        return step_from_db+","+time_from_db;
+        return "0,0";
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        AddData("0","0");
+    }
 
     @Override
     public void onPause() {
         super.onPause();
+        Toast.makeText(getActivity(),"PASUED",Toast.LENGTH_SHORT).show();
         try {
             SensorManager sm = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
             sm.unregisterListener(this);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) Logger.log(e);
         }
+
+        if(isChronometerRunning){
+            long elapsedMillis = SystemClock.elapsedRealtime() - mStopWatch.getBase();
+            AddData(stepsView.getText().toString(),String.valueOf(elapsedMillis));
+            Toast.makeText(getActivity(),"SENT on DB PAUSE",Toast.LENGTH_SHORT).show();
+            chronoeditor.putBoolean("CHRONO",true).apply();
+        }else{
+            chronoeditor.putBoolean("CHRONO",false).apply();
+            if(!stepsView.getText().toString().equals("0")){
+                stopbtn.performClick();
+                mStopWatch.stop();
+            }
+        }
+
+
         Database db = Database.getInstance(getActivity());
         db.saveCurrentSteps(since_boot);
         db.close();
     }
-
-
 
     @Override
     public void onAccuracyChanged(final Sensor sensor, int accuracy) {
@@ -631,14 +887,11 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         }
         since_boot = (int) event.values[0];
         updatePie();
+
     }
 
-    /**
-     * Updates the pie graph to show todays steps/distance as well as the
-     * yesterday and total values. Should be called when switching from step
-     * count to distance.
-     */
     private void updatePie() {
+        if(!isChronometerRunning){return;}
         if (BuildConfig.DEBUG) Logger.log("UI - update steps: " + since_boot);
         // todayOffset might still be Integer.MIN_VALUE on first start
         int steps_today = Math.max(todayOffset + since_boot, 0);
@@ -660,8 +913,7 @@ Fragment_Overview extends Fragment implements SensorEventListener {
         if (showSteps) {
             stepsView.setText(formatter.format(steps_today));
             Toast.makeText(getActivity(),"STEPS TODAY="+steps_today,Toast.LENGTH_SHORT).show();
-//            totalView.setText(formatter.format(total_start + steps_today));
-//            averageView.setText(formatter.format((total_start + steps_today) / total_days));
+
         } else {
             // update only every 10 steps when displaying distance
             SharedPreferences prefs =
@@ -677,16 +929,10 @@ Fragment_Overview extends Fragment implements SensorEventListener {
                 distance_today /= 5280;
                 distance_total /= 5280;
             }
-            stepsView.setText(formatter.format(distance_today));
-//            totalView.setText(formatter.format(distance_total));
-//            averageView.setText(formatter.format(distance_total / total_days));
+//            stepsView.setText(formatter.format(distance_today));
         }
     }
 
-    /**
-     * Updates the bar graph to show the steps/distance of the last week. Should
-     * be called when switching from step count to distance.
-     */
 
     public static Bitmap getScreenShot(View view) {
         View screenView = view.getRootView();
