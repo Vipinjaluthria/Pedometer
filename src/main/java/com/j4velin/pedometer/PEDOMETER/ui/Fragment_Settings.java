@@ -59,9 +59,6 @@ import com.j4velin.pedometer.PEDOMETER.util.PlaySettingsWrapper;
 import com.j4velin.pedometer.R;
 import com.j4velin.pedometer.PEDOMETER.SensorListener;
 
-
-
-
 public class Fragment_Settings extends PreferenceFragment implements OnPreferenceClickListener {
 
     final static int DEFAULT_GOAL = 6667;
@@ -97,7 +94,6 @@ public class Fragment_Settings extends PreferenceFragment implements OnPreferenc
                             } else {
                                 manager.cancel(SensorListener.NOTIFICATION_ID);
                             }
-
                             return true;
                         }
                     });
@@ -129,6 +125,7 @@ public class Fragment_Settings extends PreferenceFragment implements OnPreferenc
     @Override
     public void onResume() {
         super.onResume();
+
 //        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= 26) { // notification settings might have changed
             API26Wrapper.startForegroundService(getActivity(),
@@ -172,7 +169,7 @@ public class Fragment_Settings extends PreferenceFragment implements OnPreferenc
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         np.clearFocus();
-                        prefs.edit().putInt("goal", np.getValue()).commit();
+                        prefs.edit().putInt("goal", np.getValue()).apply();
                         preference.setSummary(getString(R.string.goal_summary, np.getValue()));
                         dialog.dismiss();
                         getActivity().startService(new Intent(getActivity(), SensorListener.class)
@@ -237,7 +234,7 @@ public class Fragment_Settings extends PreferenceFragment implements OnPreferenc
                     }
                 } else if (Build.VERSION.SDK_INT >= 23) {
                     API23Wrapper.requestPermission(getActivity(),
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.MANAGE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE});
                 } else {
                     Toast.makeText(getActivity(), R.string.permission_external_storage,
                             Toast.LENGTH_SHORT).show();

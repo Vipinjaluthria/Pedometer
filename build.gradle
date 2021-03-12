@@ -49,10 +49,10 @@ android {
 
     signingConfigs {
         release {
-        storeFile file('d:\\AndroidStudioProjects\\alcher2020\\alcher.jks')
-            storePassword '123456789'
+        storeFile file('/home/expert/vipin.jks')
+            storePassword 'vipinj'
             keyAlias 'key0'
-            keyPassword '123456789'
+            keyPassword 'vipinj'
         }
         release
     }

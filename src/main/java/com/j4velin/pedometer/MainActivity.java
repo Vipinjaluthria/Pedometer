@@ -1,12 +1,15 @@
 package com.j4velin.pedometer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.multidex.BuildConfig;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -46,22 +49,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
         startService(new Intent(this, SensorListener.class));
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
-        makedialog2();;
+        makedialog2();
         loadFragment(new Fragment_Overview());
 
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 23 && PermissionChecker
                 .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PermissionChecker.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+           ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.MANAGE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
     }
-
     public void makedialog2() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_dos, null);
@@ -131,5 +134,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         for (int i = 0; i < navigation.getMenu().size(); i++) {
             navigation.getMenu().getItem(i).setEnabled(enable);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==1)
+        {
+            Toast.makeText(this, "vipin", Toast.LENGTH_SHORT).show();
+        }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
