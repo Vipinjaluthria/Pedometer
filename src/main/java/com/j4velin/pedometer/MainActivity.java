@@ -22,6 +22,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         startService(new Intent(this, SensorListener.class));
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-
-        makedialog2();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //makedialog2();
         loadFragment(new Fragment_Overview());
 
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 23 && PermissionChecker
@@ -65,13 +66,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.MANAGE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
     }
-    public void makedialog2() {
+    /*public void makedialog2() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_dos, null);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
-    }
+    }*/
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -137,6 +138,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     @Override
+    protected void onDestroy() {
+        Fragment_Overview.todayOffset=Integer.MIN_VALUE;
+        Fragment_Overview.since_boot=0;
+        super.onDestroy();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==1)
         {
@@ -144,4 +152,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
 }

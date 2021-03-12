@@ -205,6 +205,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         Picasso.with(getActivity()).load(photo).into(profileimg);
         profileimg.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View view) {
                 showPopupMenu(view);
             }
@@ -213,12 +214,6 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         String[] words = name.split(" ");
 //        Toast.makeText(getActivity(), "" + words[0], Toast.LENGTH_SHORT).show();
         username.setText(words[0]);
-//        profileimg.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showdialog();
-//            }
-//        });
 
 
         button = v.findViewById(R.id.startstop);
@@ -336,12 +331,17 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                 hh = h < 10 ? "0" + h : h + "";
                                 mm = m < 10 ? "0" + m : m + "";
                                 ss = s < 10 ? "0" + s : s + "";
+                                if(s<2 && m==0 && h==0){
+
+                                    todayOffset=Integer.MIN_VALUE;
+                                   // stepsView.setText(0);
+                                }
                                 if (s > 20) {
                                     stopbtn.setEnabled(false);
                                     stopbtn.setBackgroundResource(R.drawable.round_button_grey);
                                     stopbtn.setClickable(false);
                                 }
-                                if (Integer.parseInt(stepsView.getText().toString()) >= 30) {
+                                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
                                     FancyToast.makeText(getActivity(),"You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
 //                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                                     makedialog();
@@ -433,7 +433,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     stopbtn.setBackgroundResource(R.drawable.round_button_grey);
                                     stopbtn.setClickable(false);
                                 }
-                                if (Integer.parseInt(stepsView.getText().toString()) >= 30) {
+                                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
                                     FancyToast.makeText(getActivity(),"You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
 //                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                                     makedialog();
@@ -480,8 +480,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 //                    Bitmap bmp=getScreenShot(rootView);
 //                    store(bmp,"file.png");
 //                    shareImage(file);
-                                    //UPLOAD TO DATABASE TIME
-                                    //String time=hh+":"+mm+":"+ss;
+//                                    UPLOAD TO DATABASE TIME
+//                                    String time=hh+":"+mm+":"+ss;
                                     cArg.setText(hh + ":" + mm + ":" + ss);
                                     set_to_zero();
                                     button.setText("Start Run");
@@ -517,7 +517,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     stopbtn.setBackgroundResource(R.drawable.round_button_grey);
                                     stopbtn.setClickable(false);
                                 }
-                                if (Integer.parseInt(stepsView.getText().toString()) >= 30) {
+                                if (Integer.parseInt(stepsView.getText().toString()) >= 6666) {
                                     FancyToast.makeText(getActivity(),"You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
 //                                    Toast.makeText(getActivity(), "You Completed Your Journey in " + hh + ":" + mm + ":" + ss + " time!", Toast.LENGTH_LONG).show();
                                     makedialog();
@@ -537,9 +537,13 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
                                     ss = s < 10 ? "0" + s : s + "";
                                     if (m < 13 && h == 0) {
                                         FancyToast.makeText(getActivity(),"Security Reason TRY NEXT TIME!",FancyToast.LENGTH_LONG,FancyToast.ERROR,false).show();
+                                        todayOffset=Integer.MIN_VALUE;
+                                        stepsView.setText(0);
 //                                        Toast.makeText(getActivity(), "Security Reason TRY NEXT TIME!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         addToDatabase(firebaseAuth.getUid(), "vipin", hh + ":" + mm + ":" + ss);
+                                        todayOffset=Integer.MIN_VALUE;
+                                        stepsView.setText(0);
                                     }
                                     if (Date.equals("12")|| Date.equals("13")||Date.equals("14")) {
                                         editor.putBoolean("today", true).apply();
@@ -834,6 +838,8 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     @Override
     public void onDestroyView() {
+        todayOffset=Integer.MIN_VALUE;
+        since_boot=0;
         super.onDestroyView();
         AddData("0", "0");
     }
@@ -876,6 +882,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(final SensorEvent event) {
+        ///Toast.makeText(getContext(), "vipin", Toast.LENGTH_SHORT).show();
         if (BuildConfig.DEBUG) Logger.log(
                 "UI - sensorChanged | todayOffset: " + todayOffset + " since boot: " +
                         event.values[0]);

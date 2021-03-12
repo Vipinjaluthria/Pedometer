@@ -38,7 +38,7 @@ public class ShutdownRecevier extends BroadcastReceiver {
         // setting on the next boot and displays an error message if it's not
         // set to true
         context.getSharedPreferences("pedometer", Context.MODE_PRIVATE).edit()
-                .putBoolean("correctShutdown", true).commit();
+                .putBoolean("correctShutdown", true).apply();
 
         Database db = Database.getInstance(context);
         // if it's already a new day, add the temp. steps to the last one
